@@ -4,6 +4,7 @@ html {
     color: #222;
     font-size: 1em;
     line-height: 1.4;
+    font-family: 'Oswald', sans-serif;
 }
 
 ::-moz-selection {
@@ -51,11 +52,172 @@ textarea {
     padding: 0.2em 0;
 }
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: underline;
+    -moz-text-decoration-color: #ababab;
+    tex-decoration-color: #ababab;
+}
+
+a:visited {
+    color: #222;
+}
 
 /* ==========================================================================
-   Author's custom styles
+   Application
    ========================================================================== */
 
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+header {
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+    box-shadow: 0 0 5px #222;
+}
+
+.logo {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.logo h1 {
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.nav-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: 0;
+    background: #fafafa;
+    text-align: center;
+    padding: 20px;
+}
+
+.nav-item {
+    display: inline-block;
+    width: 24%;
+}
+
+.nav-item:hover {
+    color: #8f8f8f;
+}
+
+.nav-item::after {
+    display:block;
+    content: '';
+    border-bottom: dotted 2px #e5e5e5;  
+    transform: scaleX(0);  
+    transition: transform 500ms ease-in-out;
+}
+
+.nav-item:hover::after {
+    transform: scaleX(1);
+}
+
+.nav .active {
+    font-style: italic !important;
+}
+
+.icon-float {
+    display: none;
+}
+
+#map {
+    height: 100%;
+    overflow: hidden;
+}
+
+.floater {
+    position: absolute;
+    left: 30px;
+    top: 200px;
+    width: 300px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    z-index: 1000;
+}
+
+.floater hr {
+    margin-top: 0;
+}
+
+#search-field {
+    width: 80%;
+    border-radius: 3px;
+    border: 1px outset #DDDDDD;
+}
+
+#search-btn {
+    background: #fff;
+    border-radius: 3px;
+    border: 1px outset #ddd;
+}
+
+.floter-favorite {
+    color: #222;
+    font-size: .75em;
+}
+
+.floter-favorite:hover {
+    color: #8F8F8F;
+}
+
+.location-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 0 0 0;
+}
+
+.location-list li {
+    width: 100%;
+    padding: 2px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.location-list li:hover {
+    background: #e5e5e5;
+}
+
+.location-list li:hover .location-title {
+    padding: 2px 5px;
+} 
+
+.floater .icon-heart {
+    float: right;
+    padding-left: 20px;
+    color: #ccc;
+}
+
+.floater .icon-heart:hover {
+    color: #c1272d;
+    transform: scale(1.3);
+    padding-right: 3px;
+}
+
+footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 30px;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 0 5px #222;
+    text-align: center;
+}
 
 
 
@@ -74,15 +236,83 @@ textarea {
    Media Queries
    ========================================================================== */
 
-@media only screen and (min-width: 35em) {
+@media screen and (max-width:680px) {
+    
+    nav {
+        display: none;
+        position: relative;
+        right: 0;
+        top: 0;
+        z-index: 500;
+        float: right;
+        width: 60vw;
+    }
 
-}
+    .nav-list {
+        float: left;
+        width: 50%;
+        height: 100%;
+    }
 
-@media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
+    .nav-item {
+        display: block;
+        width: 100%;
+        text-align: right;
+        padding: 10px 0;
+    }
 
+    main {
+        position: relative;
+    }
+
+    .icon-float {
+        display: block;
+        position: absolute;
+        padding: 10px;
+        font-size: 1.75em;
+        z-index: 1000;
+        border-radius: 60px;
+        background: #fff;
+        box-shadow: 0px 0px 2px #888;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .icon-float:hover {
+        transform: translateY(-10%);
+        box-shadow: 0px 5px 2px #888;
+        color: #8f8f8f;
+    }
+
+    .icon-map {
+        top: 20px;
+        right: 20px;
+    }
+
+    .icon-popup {
+        left: 20px;
+        bottom: 50px;
+    }
+
+    .floater {
+        display: none;
+        width: 60vw;
+        max-width: 300px;
+        /*top: 10vh;*/
+        max-height: 230px;
+        overflow: auto;
+        top: 180px;
+        left: 20px;
+    }
+
+    .location-list * {
+        font-size: 90%;
+    }
+
+    small {
+        font-size: 60%;
+    }
 }
 
 /* ==========================================================================
@@ -133,66 +363,3 @@ textarea {
     *zoom: 1;
 }
 
-/* ==========================================================================
-   Print styles
-   ========================================================================== */
-
-@media print {
-    *,
-    *:before,
-    *:after {
-        background: transparent !important;
-        color: #000 !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-    }
-
-    a,
-    a:visited {
-        text-decoration: underline;
-    }
-
-    a[href]:after {
-        content: " (" attr(href) ")";
-    }
-
-    abbr[title]:after {
-        content: " (" attr(title) ")";
-    }
-
-    a[href^="#"]:after,
-    a[href^="javascript:"]:after {
-        content: "";
-    }
-
-    pre,
-    blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
-
-    thead {
-        display: table-header-group;
-    }
-
-    tr,
-    img {
-        page-break-inside: avoid;
-    }
-
-    img {
-        max-width: 100% !important;
-    }
-
-    p,
-    h2,
-    h3 {
-        orphans: 3;
-        widows: 3;
-    }
-
-    h2,
-    h3 {
-        page-break-after: avoid;
-    }
-}
