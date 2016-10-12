@@ -28,33 +28,31 @@
                 </div>
             </header>
               
-            <main> 
+            <main>
+                <div id="map"></div>
+
                 <nav>
-                    <ul class="nav-list">
-                        <li class="nav-item" data-bind="">San Francisco</li>
-                        <li class="nav-item" data-bind="">Los Angeles</li>
-                        <li class="nav-item" data-bind="">New York</li>
-                        <li class="nav-item" data-bind="">Miami</li>
+                    <div class="icon-float icon-map" data-bind=""></div>
+                    <ul class="nav-list" data-bind="foreach: currentCity().cities">
+                        <li class="nav-item" data-bind="text: $data, click: $parent.updateCurrentCity"></li>
                     </ul>
                 </nav>
             
-                <div class="icon-float icon-map" data-bind=""></div>
+                <div class="icon-float icon-popup"></div>
 
                 <div class="floater">
                     <hr>
-                    <h3>Places in <span data-bind="text: currentCity"></span></h3>
+                    <h3>Places in <span data-bind="text: currentCity().cityName"></span></h3>
                     <input type="text" name="search" id="search-field" data-bind=""> <button id="search-btn" data-bind="">Go</button><br>
                     <a class="floter-favorite" href="#" data-bind="">Show Only Favorites</a>
-                    <ul class="location-list" data-bind="foreach: locations">
+                    <ul class="location-list" data-bind="foreach: currentCity().locations">
                         <li><span class="location-title" data-bind="text: name"></span><span class="icon-heart" data-bind=""></span></li>
                     </ul>
                 </div>
+                
             </main>
 
-            <div id="map"></div>
-
             <footer>
-                <div class="icon-float icon-popup"></div>
                 <small>Application created for Udacity FEND course by <a href="http://github.com/kavispires" target="_blank">Fabiano 'Kavis' Pires.</a></small>
             </footer>
         </div><!-- /container -->
