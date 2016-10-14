@@ -226,6 +226,13 @@ var ViewModel = function() {
         console.log(data.favorite());
     }
 
+    this.focusMarker = function (data) {
+        var marker = self.markers()[data.id];
+        var latLng = marker.getPosition();
+        self.map.setCenter(latLng);
+        self.map.setZoom(15);
+    }
+
     this.initMap();
 }
 
@@ -237,9 +244,10 @@ function init() {
 
 // TODO
 // InfoWindows with street view (NOT WORKING)
-// When list item clicked, hide all markers, zoom in that item marker
+// When list item clicked zoom in that item marker
 // When favorite, make marker red.
 // Filtering by typing location.
+// Responsive menus
 
 // DONE List is highlighted when marker is clicked
 // DONE Implement Favorite 

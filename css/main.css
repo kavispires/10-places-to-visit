@@ -235,6 +235,12 @@ nav {
     width: 100%;
     padding: 2px 0;
     border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.location-title {
+    display: inline-block;
+    width: calc(100% - 50px);
 }
 
 .location-item:hover {
