@@ -14,3 +14,4 @@
 - Favorite Filtering 
 - Markers are not resetting (show/hide all)
 - When list item clicked zoom in that item marker
+- When filtering favorites, bounds are set to those favorite locations

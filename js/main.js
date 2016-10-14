@@ -60,11 +60,16 @@ var ViewModel = function() {
         if (status) {
             self.favoriteStatus(false);
             self.toggleFavoriteLink('Filter Favorites Only');
-
+            // Fit Bounds to All Bounds
+            self.bounds(self.boundsAll);
         } else {
             self.favoriteStatus(true);
             self.toggleFavoriteLink('List All Locations');
+            // Fit Bounds to Favorite Bounds
+            self.bounds(self.boundsFavorites);          
         }
+        self.map.setZoom(12);
+        self.map.fitBounds(self.bounds());
     }
 
     // Toggle Markers
@@ -90,8 +95,12 @@ var ViewModel = function() {
         }
     }
 
+    // Inicialize Map
     this.map = ko.observable();
     this.markers = ko.observableArray([]);
+    this.bounds = ko.observable();
+    this.boundsAll;
+    this.boundsFavorites;
 
     this.initMap = function() {
         // Clear markers
@@ -144,7 +153,6 @@ var ViewModel = function() {
                 this.setIcon(self.markerIcon());
                 // Highlight list item
                 self.currentLocations()[this.id].highlight(true);
-                console.log( this.id);
             });
             marker.addListener('mouseout', function() {
                 self.markerIcon(defaultIcon);
@@ -154,9 +162,12 @@ var ViewModel = function() {
             });
 
             bounds.extend(marker.position);
+            // Save bounds for all locations
+            self.boundsAll = bounds;
+            // Update observable for bounds
+            self.bounds(bounds);
         }
-
-        self.map.fitBounds(bounds);
+        self.map.fitBounds(self.bounds());
 
     };
 
@@ -219,11 +230,32 @@ var ViewModel = function() {
             data.favorite(false);
             // Recolor marker to default
 
+            // Update BoundsFavorite
+
         } else {
             data.favorite(true);
             // Recolor marker to red
+
+            // Update BoundsFavorite
+
         }
+        self.calculateBoundsForFavorite();
         console.log(data.favorite());
+    }
+
+    this.calculateBoundsForFavorite = function() {
+        // Loop through all Locations
+        // If favorite is true, add to bounds
+        // Update observable
+        var boundsfav = new google.maps.LatLngBounds();
+        var locations = self.currentLocations();
+        var markers = self.markers();
+        for(var i = 0; i < locations.length; i++) {
+            if(locations[i].favorite()){
+                boundsfav.extend(markers[i].position);              
+            }
+        }
+        self.boundsFavorites = boundsfav;
     }
 
     this.focusMarker = function (data) {
@@ -240,16 +272,3 @@ var ViewModel = function() {
 function init() {
     ko.applyBindings(new ViewModel());
 }
-
-
-// TODO
-// InfoWindows with street view (NOT WORKING)
-// When list item clicked zoom in that item marker
-// When favorite, make marker red.
-// Filtering by typing location.
-// Responsive menus
-
-// DONE List is highlighted when marker is clicked
-// DONE Implement Favorite 
-// DONE Favorite Filtering 
-// DONE Markers are not resetting (show/hide all) 
