@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Neighborhood Map</title>
+        <title>10 Places to Visit</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -27,26 +27,27 @@
                     <h1>10 Places to Visit</h1>
                 </div>
             </header>
-              
+            
+            <nav>
+                <div class="icon-float icon-map" data-bind=""></div>
+                <ul class="nav-list" data-bind="fadeVisible: toggleNavigationMenu, foreach: cityList">
+                    <li class="nav-item" data-bind="text: $data, click: $parent.updateCurrentCity"></li>
+                </ul>
+            </nav>
+
             <main>
                 <div id="map"></div>
-
-                <nav>
-                    <div class="icon-float icon-map" data-bind=""></div>
-                    <ul class="nav-list" data-bind="foreach: currentCity().cities">
-                        <li class="nav-item" data-bind="text: $data, click: $parent.updateCurrentCity"></li>
-                    </ul>
-                </nav>
             
-                <div class="icon-float icon-popup"></div>
+                <div class="icon-float icon-popup" data-bind=""></div>
 
-                <div class="floater">
+                <div class="floater" data-bind="">
                     <hr>
-                    <h3>Places in <span data-bind="text: currentCity().cityName"></span></h3>
+                    <h3>10 Places in <span data-bind="text: currentCity"></span></h3>
                     <input type="text" name="search" id="search-field" data-bind=""> <button id="search-btn" data-bind="">Go</button><br>
-                    <a class="floter-favorite" href="#" data-bind="">Show Only Favorites</a>
-                    <ul class="location-list" data-bind="foreach: currentCity().locations">
-                        <li><span class="location-title" data-bind="text: name"></span><span class="icon-heart" data-bind=""></span></li>
+                    <a class="toggle-favorite" href="#" data-bind="text: toggleFavoriteLink, click: toggleFavorite">Show Only Favorites</a>  <a class="toggle-markers" hreft="#" data-bind="text: toggleMarkersLink, click: toggleMarkers">Hide all markers</a>
+                    <ul class="location-list" data-bind="foreach: currentLocations">
+                        <li class="location-item" data-bind="visible: favorite() == $parent.favoriteStatus() || $parent.favoriteStatus() == false, css:{ 'location-highlight': highlight() == true}"><span class="location-title" data-bind="text: title"></span><span class="icon-heart" data-bind="click: $parent.markAsFavorite, css:{ 'favorited-heart': favorite() == true}"></span></li>
+
                     </ul>
                 </div>
                 
@@ -62,9 +63,10 @@
         <script src='js/vendor/knockout-3.4.0.js'></script>
         <script src="js/plugins.js"></script>
         <script src="js/database/locations.js"></script>
+        <script src="js/database/jsMapStyles.js"></script>
         <script src="js/main.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7CAEBKny3BV7O9f92dW6rMlera0Gol0k&callback=initMap"
-    async defer></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyC7CAEBKny3BV7O9f92dW6rMlera0Gol0k&v=3&callback=init">
+    </script>
     </script>
     </body>
 </html>
