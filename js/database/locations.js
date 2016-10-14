@@ -1,224 +1,309 @@
-var data = {
-	"san francisco" :
+var database = {
+	"San Francisco" :
 	[
 		{
-			name: "Golden Gate Bridge",
-			lat: "37.819929",
-			long: "-122.478255"
+			title: "Alcatraz",
+			coord: {
+				lat: "37.826723",
+				lng: "-122.421067"
+			}
 		},
 		{
-			name: "Alcatraz",
-			lat: "37.826723",
-			long: "-122.421067"
+			title: "AT&T Park",
+			coord: {
+				lat: "37.778595",
+				lng: "-122.38927"
+			}
 		},
 		{
-			name: "Fisherman's Wharf",
-			lat: "37.808",
-			long: "-122.417743"
+			title: "Californa Academy of Sciences",
+			coord: {
+				lat: "37.769865",
+				lng: "-122.466095"
+			}
 		},
 		{
-			name: "Union Square",
-			lat: "37.787994",
-			long: "-122.407437"
+			title: "Chinatown",
+			coord: {
+				lat: "37.794138",
+				lng: "-122.407791"
+			}
 		},
 		{
-			name: "Chinatown",
-			lat: "37.794138",
-			long: "-122.407791"
+			title: "Civic Center",
+			coord: {
+				lat: "37.779587",
+				lng: "-122.417349"
+			}
 		},
 		{
-			name: "Californa Academy of Sciences",
-			lat: "37.769865",
-			long: "-122.466095"
+			title: "Ferry Building",
+			coord: {
+				lat: "37.795581",
+				lng: "-122.393411"
+			}
 		},
 		{
-			name: "AT&T Park",
-			lat: "37.778595",
-			long: "-122.38927"
+			title: "Fisherman's Wharf",
+			coord: {
+				lat: "37.808",
+				lng: "-122.417743"
+			}
 		},
 		{
-			name: "Ferry Building",
-			lat: "37.795581",
-			long: "-122.393411"
+			title: "Golden Gate Bridge",
+			coord: {
+				lat: "37.819929",
+				lng: "-122.478255"
+			}
 		},
 		{
-			name: "Civic Center",
-			lat: "37.779587",
-			long: "-122.417349"
+			title: "Golden Gate Park",
+			coord: {
+				lat: "37.769421",
+				lng: "-122.486214"
+			}
 		},
 		{
-			name: "Golden Gate Park",
-			lat: "37.769421",
-			long: "-122.486214"
-		}
+			title: "Union Square",
+			coord: {
+				lat: "37.787994",
+				lng: "-122.407437"
+			}
+		},	
 	],
-	"new york" :
+	"New York City" :
 	[
 		{
-			name: "Empire State Building",
-			lat: "",
-			long: ""
+			title: "Brooklyn Bridge",
+			coord: {
+				lat: "40.706086",
+				lng: "-73.996864"
+			}
 		},
 		{
-			name: "Statue of Liberty",
-			lat: "",
-			long: ""
+			title: "Central Park",
+			coord: {
+				lat: "40.771133",
+				lng: "-73.974187"
+			}
 		},
 		{
-			name: "Central Park",
-			lat: "",
-			long: ""
+			title: "Empire State Building",
+			coord: {
+				lat: "40.748441",
+				lng: "-73.985664"
+			}
 		},
 		{
-			name: "Rockefeller Center",
-			lat: "",
-			long: ""
+			title: "Madison Square Garden",
+			coord: {
+				lat: "40.750505",
+				lng: "-73.993439"
+			}
 		},
 		{
-			name: "National September 11 Memorial & Museum",
-			lat: "",
-			long: ""
+			title: "National September 11 Memorial & Museum",
+			coord: {
+				lat: "40.71058",
+				lng: "-74.015583"
+			}
 		},
 		{
-			name: "Brooklyn Bridge",
-			lat: "",
-			long: ""
+			title: "Rockefeller Center",
+			coord: {
+				lat: "40.75861",
+				lng: "-73.978209"
+			}
 		},
 		{
-			name: "Madison Square Garden",
-			lat: "",
-			long: ""
+			title: "St. Patrick's Cathedral",
+			coord: {
+				lat: "40.758545",
+				lng: "-73.976299"
+			}
 		},
 		{
-			name: "Yankee Stadium",
-			lat: "",
-			long: ""
+			title: "Statue of Liberty",
+			coord: {
+				lat: "40.6892",
+				lng: "-74.0445"
+			}
 		},
 		{
-			name: "Metropolitan Museum of Art",
-			lat: "",
-			long: ""
+			title: "The Metropolitan Museum of Art",
+			coord: {
+				lat: "40.779437",
+				lng: "-73.963244"
+			}
 		},
 		{
-			name: "St. Patrick's Cathedral",
-			lat: "",
-			long: ""
-		}
+			title: "Yankee Stadium",
+			coord: {
+				lat: "40.829643",
+				lng: "-73.926174"
+			}
+		},
 	],
-	"los angeles" :
+	"Los Angeles" :
 	[
 		{
-			name: "Hollywood Sign",
-			lat: "34.134115",
-			long: "-118.321548"
+			title: "3rd Street Promenade",
+			coord: {
+				lat: "34.016364",
+				lng: "-118.497027"
+			}
 		},
 		{
-			name: "Hollywood Walk of Fame",
-			lat: "34.101286",
-			long: "-118.342173"
+			title: "Echo Park Lake",
+			coord: {
+				lat: "34.072873",
+				lng: "-118.260519"
+			}
 		},
 		{
-			name: "Echo Park Lake",
-			lat: "34.072873",
-			long: "-118.260519"
+			title: "The Getty Center",
+			coord: {
+				lat: "34.078036",
+				lng: "-118.474095"
+			}
 		},
 		{
-			name: "3rd Street Promenade",
-			lat: "34.016364",
-			long: "-118.497027"
+			title: "Griffith Observatory",
+			coord: {
+				lat: "34.119322",
+				lng: "-118.300152"
+			}
 		},
 		{
-			name: "Venice Canals",
-			lat: "33.983258",
-			long: "-118.466494"
+			title: "Hollywood Sign",
+			coord: {
+				lat: "34.134115",
+				lng: "-118.321548"
+			}
 		},
 		{
-			name: "STAPLES Center",
-			lat: "34.043018",
-			long: "-118.267254"
+			title: "Hollywood Walk of Fame",
+			coord: {
+				lat: "34.101286",
+				lng: "-118.342173"
+			}
 		},
 		{
-			name: "Rodeo Drive",
-			lat: "34.073408",
-			long: "-118.407677"
+			title: "LACMA",
+			coord: {
+				lat: "34.063932",
+				lng: "-118.359229"
+			}
 		},
 		{
-			name: "Griffith Observatory",
-			lat: "34.119322",
-			long: "-118.300152"
+			title: "Rodeo Drive",
+			coord: {
+				lat: "34.073408",
+				lng: "-118.407677"
+			}
 		},
 		{
-			name: "LACMA",
-			lat: "34.063932",
-			long: "-118.359229"
+			title: "STAPLES Center",
+			coord: {
+				lat: "34.043018",
+				lng: "-118.267254"
+			}
 		},
 		{
-			name: "The Getty Center",
-			lat: "34.078036",
-			long: "-118.474095"
-		}
+			title: "Venice Canals",
+			coord: {
+				lat: "33.983258",
+				lng: "-118.466494"
+			}
+		},
 	],
-	"miami" :
+	"Miami" :
 	[
 		{
-			name: "Zoo Miami",
-			lat: "25.607127",
-			long: "-80.399279"
+			title: "American Airlines Arena",
+			coord: {
+				lat: "25.781401",
+				lng: "-80.186969"
+			}
 		},
 		{
-			name: "Coral Castle",
-			lat: "25.500334",
-			long: "-80.444308"
+			title: "Bayfront Park",
+			coord: {
+				lat: "25.774949",
+				lng: "-80.185988"
+			}
 		},
 		{
-			name: "Freedom Tower",
-			lat: "25.780273",
-			long: "-80.189669"
+			title: "Coral Castle",
+			coord: {
+				lat: "25.500334",
+				lng: "-80.444308"
+			}
 		},
 		{
-			name: "Miracle Mile",
-			lat: "25.749524",
-			long: "-80.258694"
+			title: "Fairchild Tropical Botanic Garden",
+			coord: {
+				lat: "25.676931",
+				lng: "-80.272787"
+			}
 		},
 		{
-			name: "Jungle Island",
-			lat: "25.785703",
-			long: "-80.174355"
+			title: "Freedom Tower",
+			coord: {
+				lat: "25.780273",
+				lng: "-80.189669"
+			}
 		},
 		{
-			name: "Miami Seaquarium",
-			lat: "25.734409",
-			long: "-80.164814"
+			title: "Jungle Island",
+			coord: {
+				lat: "25.785703",
+				lng: "-80.174355"
+			}
 		},
 		{
-			name: "American Airlines Arena",
-			lat: "25.781401",
-			long: "-80.186969"
+			title: "Marlins Park",
+			coord: {
+				lat: "25.778205",
+				lng: "-80.22054"
+			}
 		},
 		{
-			name: "Bayfront Park",
-			lat: "25.774949",
-			long: "-80.185988"
+			title: "Miami Seaquarium",
+			coord: {
+				lat: "25.734409",
+				lng: "-80.164814"
+			}
 		},
 		{
-			name: "Fairchild Tropical Botanic Garden",
-			lat: "25.676931",
-			long: "-80.272787"
+			title: "Miracle Mile",
+			coord: {
+				lat: "25.749524",
+				lng: "-80.258694"
+			}
 		},
 		{
-			name: "Marlins Park",
-			lat: "25.778205",
-			long: "-80.22054"
-		}
+			title: "Zoo Miami",
+			coord: {
+				lat: "25.607127",
+				lng: "-80.399279"
+			}
+		},
 	]
 }
 
 // Add favorite key to each item/location in each city in data
+// Turn coordinates into numbers (not strings)
 
-for (var key in data) {
-	if (data.hasOwnProperty(key)) {
-		for (var i = 0; i < data[key].length; i++) {
-			data[key][i].favorite = false;
+for (var key in database) {
+	if (database.hasOwnProperty(key)) {
+		for (var i = 0; i < database[key].length; i++) {
+			database[key][i].favorite = ko.observable(false);
+			database[key][i].coord.lng = Number(database[key][i].coord.lng);
+			database[key][i].coord.lat = Number(database[key][i].coord.lat);
+			database[key][i].id = i;
+			database[key][i].highlight = ko.observable(false);
 		}
 	}
 }
