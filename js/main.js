@@ -1,19 +1,10 @@
-/*
-    Location Object
-    */
-/*var Location = function(locations, cityIndex, i) {
-    this.title = ko.observable(locations[cityIndex][i].title);
-    this.coord = ko.observable(locations[cityIndex][i].coord);
-    this.favorite = ko.observable(locations[cityIndex][i].favorite);
-}*/
-
 var ViewModel = function() {
     var self = this;
 
-    // 'Hamburger' buttons for small screens
-    var windowWidth = $(window).width();
+    // Hamburger Menus for Small Screens
     this.toggleNavigationMenu = ko.observable();
     this.toggleFloaterWindow = ko.observable();
+    var windowWidth = $(window).width();
     if (windowWidth < 680) {
         this.toggleNavigationMenu(false);
         this.toggleFloaterWindow(false);
@@ -65,8 +56,10 @@ var ViewModel = function() {
         } else {
             self.favoriteStatus(true);
             self.toggleFavoriteLink('List All Locations');
-            // Fit Bounds to Favorite Bounds
-            self.bounds(self.boundsFavorites);          
+            // Fit Bounds to Favorite Bounds if any location has been favorited ONLY
+            if (self.boundsFavorites) {
+                self.bounds(self.boundsFavorites);
+            }          
         }
         self.map.setZoom(12);
         self.map.fitBounds(self.bounds());
@@ -125,7 +118,7 @@ var ViewModel = function() {
         // Markers style
         var defaultIcon = this.makeMarkerIcon('63bde2');
         var highlightedIcon = this.makeMarkerIcon('fff');
-        var favoritedIcon = this.makeMarkerIcon('c1272d');
+        var favoritedIcon = this.makeMarkerIcon('c1272d'); //TODO
         this.markerIcon = ko.observable(defaultIcon);
 
 
@@ -181,15 +174,15 @@ var ViewModel = function() {
                 infowindow.setMarker(null);
             });
 
+            // Get StreetView on InfoWindow
             var streetViewService = new google.maps.StreetViewService();
             var radius = 50;
 
             function getStreetView(data, status) {
-                console.log('data', data.location);
                 if (status == google.maps.StreetViewStatus.OK) {
                     var nearStreetViewLocation = data.location.latLng;
                     var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
-                    infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+                    infowindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3></div><div id="pano"></div>');
                     var panoramaOptions = {
                         position: nearStreetViewLocation,
                         pov: {
@@ -199,13 +192,13 @@ var ViewModel = function() {
                     };
                     var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
                 } else {
-                    infowindow.setContent('<div>' + marker.title + '</div><div>No Street View Found</div>');
+                    infowindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3></div><div>No Street View Found</div>');
                 }
             }
 
             streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
-            infowindow.open(map, marker);
+            infowindow.open(self.map, marker);
         }
     }
 

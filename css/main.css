@@ -279,6 +279,15 @@ nav {
     padding: 0 !important;
 }
 
+.info-window h3 {
+    margin: 0 !important;
+}
+
+#pano {
+    width: 220px;
+    height: 200px;
+}
+
 /* FOOTER */
 
 footer {
@@ -350,6 +359,10 @@ small {
         font-size: 100%;
     }
 
+    #pano {
+        width: 300px;
+        height: 200px;
+    }
 
 }
 
