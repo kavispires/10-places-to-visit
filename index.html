@@ -43,7 +43,7 @@
                 <div class="floater" data-bind="">
                     <hr>
                     <h3>10 Places in <span data-bind="text: currentCity"></span></h3>
-                    <input type="text" name="search" id="search-field" data-bind=""> <button id="search-btn" data-bind="">Go</button><br>
+                    <input id="search-field" type="text" name="search" placeholder="Type to filter a location" data-bind=""> <button id="search-btn" data-bind="">Go</button><br>
                     <a class="toggle-favorite" href="#" data-bind="text: toggleFavoriteLink, click: toggleFavorite">Show Only Favorites</a>  <a class="toggle-markers" hreft="#" data-bind="text: toggleMarkersLink, click: toggleMarkers">Hide all markers</a>
                     <ul class="location-list" data-bind="foreach: currentLocations">
                         <li class="location-item" data-bind="visible: favorite() == $parent.favoriteStatus() || $parent.favoriteStatus() == false, css:{ 'location-highlight': highlight() == true}"><span class="location-title" data-bind="text: title, click: $parent.focusMarker"></span><span class="icon-heart" data-bind="click: $parent.markAsFavorite, css:{ 'favorited-heart': favorite() == true}"></span></li>
@@ -65,7 +65,7 @@
         <script src="js/database/locations.js"></script>
         <script src="js/database/jsMapStyles.js"></script>
         <script src="js/main.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyC7CAEBKny3BV7O9f92dW6rMlera0Gol0k&v=3&callback=init">
+        <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyC7CAEBKny3BV7O9f92dW6rMlera0Gol0k&v=3&callback=init">
     </script>
     </script>
     </body>

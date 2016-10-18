@@ -302,7 +302,7 @@ for (var key in database) {
 			database[key][i].favorite = ko.observable(false);
 			database[key][i].coord.lng = Number(database[key][i].coord.lng);
 			database[key][i].coord.lat = Number(database[key][i].coord.lat);
-			database[key][i].id = i;
+			database[key][i].index = i;
 			database[key][i].highlight = ko.observable(false);
 		}
 	}

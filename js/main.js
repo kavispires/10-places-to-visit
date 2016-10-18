@@ -99,16 +99,13 @@ var ViewModel = function() {
         // Clear markers
         self.markers([]);
 
-        // Copy styles from jsMapStyles.js
-        var styles = mapStyles;
-
         self.map = new google.maps.Map(document.getElementById('map'), {
             center: {
                 lat: 37.9397,
                 lng: -122.5644
             },
             zoom: 6,
-            styles: styles,
+            styles: mapStyles, // these styles are gotten from jsMapStyles.js loaded in the html
             mapTypeControl: false
         });
 
@@ -131,7 +128,7 @@ var ViewModel = function() {
                 title: title,
                 icon: this.markerIcon(),
                 animation: google.maps.Animation.DROP,
-                id: i,
+                index: i,
             });
 
             self.markers.push(marker);
@@ -145,13 +142,13 @@ var ViewModel = function() {
                 self.markerIcon(highlightedIcon);
                 this.setIcon(self.markerIcon());
                 // Highlight list item
-                self.currentLocations()[this.id].highlight(true);
+                self.currentLocations()[this.index].highlight(true);
             });
             marker.addListener('mouseout', function() {
                 self.markerIcon(defaultIcon);
                 this.setIcon(self.markerIcon());
                 // Un-highlight list item
-                self.currentLocations()[this.id].highlight(false);
+                self.currentLocations()[this.index].highlight(false);
             });
 
             bounds.extend(marker.position);
@@ -215,7 +212,7 @@ var ViewModel = function() {
 
     // Toggle favorite when Heart is clicked
     this.markAsFavorite = function(data) {
-        var index = data.id;
+        var index = data.index;
         var marker = self.markers()[index];
         console.log(index);
         console.log(marker);
@@ -252,7 +249,7 @@ var ViewModel = function() {
     }
 
     this.focusMarker = function (data) {
-        var marker = self.markers()[data.id];
+        var marker = self.markers()[data.index];
         var latLng = marker.getPosition();
         self.map.setCenter(latLng);
         self.map.setZoom(15);
