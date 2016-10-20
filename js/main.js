@@ -357,7 +357,13 @@ var ViewModel = function() {
 
     // When mouseout list-item, recolor back to default
     this.highlightMarkerOff = function(data) {
-        self.markerIcon(self.defaultIcon);
+        if(data.favorite()) {
+            // Recolor marker to default
+            self.markerIcon(self.favoritedIcon);
+        } else {
+            // Recolor marker to red
+            self.markerIcon(self.defaultIcon);
+        }
         self.markers()[data.index].setIcon(self.markerIcon());
     }
 
