@@ -325,6 +325,7 @@ var ViewModel = function() {
         }
     }
 
+    // Recalculate bounds based of Favorite Locations
     this.calculateBoundsForFavorite = function() {
         // Loop through all Locations
         // If favorite is true, add to bounds
@@ -340,11 +341,24 @@ var ViewModel = function() {
         self.boundsFavorites = boundsfav;
     }
 
-    this.focusMarker = function (data) {
+    // When list-item is clicked, zoom on corresponding marker
+    this.focusMarker = function(data) {
         var marker = self.markers()[data.index];
         var latLng = marker.getPosition();
         self.map.setCenter(latLng);
-        self.map.setZoom(15);
+        self.map.setZoom(17);
+    }
+
+    // When mouseover list-item, recolor corresponding marker to white (highlitedned icon)
+    this.highlightMarkerOn = function(data) {
+        self.markerIcon(self.highlightedIcon);
+        self.markers()[data.index].setIcon(self.markerIcon());
+    }
+
+    // When mouseout list-item, recolor back to default
+    this.highlightMarkerOff = function(data) {
+        self.markerIcon(self.defaultIcon);
+        self.markers()[data.index].setIcon(self.markerIcon());
     }
 
     this.initMap();

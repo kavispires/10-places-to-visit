@@ -8,6 +8,7 @@
 - Responsive menus
 
 #### DONE
+- Markers are highlighted when hover on list
 - When favorite, make marker red
 - Favorite color is carried when City is changed
 - Infowindow shows formatted_address
