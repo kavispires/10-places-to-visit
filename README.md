@@ -3,12 +3,15 @@
 ** In progress **
 
 #### TODO
-- When favorite, make marker red.
-- Filtering by typing location.
+
+- Filtering by typing location
 - Responsive menus
 
 #### DONE
-- InfoWindows with street view
+- When favorite, make marker red
+- Favorite color is carried when City is changed
+- Infowindow shows formatted_address
+- InfoWindow shows street view
 - List is highlighted when marker is clicked
 - Implement Favorite 
 - Favorite Filtering 

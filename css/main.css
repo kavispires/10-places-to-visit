@@ -279,6 +279,10 @@ nav {
     padding: 0 !important;
 }
 
+.info-window {
+    max-width: 240px;
+}
+
 .info-window h3 {
     margin: 0 !important;
 }

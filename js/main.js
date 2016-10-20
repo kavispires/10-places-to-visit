@@ -36,11 +36,14 @@ var ViewModel = function() {
 
     // .nav-item click updates currentCity and cuttentLocations
     this.updateCurrentCity = function(data) {
+        // Update currentCity
         var index = self.cityList.indexOf(data);
         self.currentCity(self.cityList()[index]);
         self.currentLocations(self.cityLocations()[index]);
         self.initMap();
         self.currentCityIndex = index;
+        // Recolor Markers
+        self.recolorFavoriteMarkers(data);
     }
 
     // Show Favotires/Show All Locations
@@ -95,6 +98,24 @@ var ViewModel = function() {
     this.boundsAll;
     this.boundsFavorites;
 
+    // Create Markers
+    this.makeMarkerIcon = function(color) {
+        var markerImage = {
+            url: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + color,
+            size: new google.maps.Size(21, 34),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(10, 34),
+            scaledSize: new google.maps.Size(21, 34)
+        };
+        return markerImage;
+    }
+
+    // Markers Styles
+    this.defaultIcon = this.makeMarkerIcon('63bde2');
+    this.highlightedIcon = this.makeMarkerIcon('fff');
+    this.favoritedIcon = this.makeMarkerIcon('c1272d'); //TODO
+    this.markerIcon = ko.observable(self.defaultIcon);
+
     this.initMap = function() {
         // Clear markers
         self.markers([]);
@@ -111,24 +132,21 @@ var ViewModel = function() {
 
         var largeInfowindow = new google.maps.InfoWindow();
         var bounds = new google.maps.LatLngBounds();
-
-        // Markers style
-        var defaultIcon = this.makeMarkerIcon('63bde2');
-        var highlightedIcon = this.makeMarkerIcon('fff');
-        var favoritedIcon = this.makeMarkerIcon('c1272d'); //TODO
-        this.markerIcon = ko.observable(defaultIcon);
-
-
+        
+        // Add Markers to markers
         for (var i = 0; i < self.currentLocations().length; i++) {
             var position = self.currentLocations()[i].coord;
             var title = self.currentLocations()[i].title;
+            var address = self.currentLocations()[i].address;
             var marker = new google.maps.Marker({
                 map: self.map,
                 position: position,
                 title: title,
-                icon: this.markerIcon(),
+                address: address,
+                icon: self.markerIcon(),
                 animation: google.maps.Animation.DROP,
                 index: i,
+                favorite: false
             });
 
             self.markers.push(marker);
@@ -136,16 +154,23 @@ var ViewModel = function() {
             // Marker Listeners
             marker.addListener('click', function() {
                 self.populateInfoWindow(this, largeInfowindow);
-                // TODO: highlight location list item
+                // Toggle animation
+                self.turnOffMarkerAnimation();
+                this.setAnimation(google.maps.Animation.BOUNCE);
             });
             marker.addListener('mouseover', function() {
-                self.markerIcon(highlightedIcon);
+                self.markerIcon(self.highlightedIcon);
                 this.setIcon(self.markerIcon());
                 // Highlight list item
                 self.currentLocations()[this.index].highlight(true);
             });
             marker.addListener('mouseout', function() {
-                self.markerIcon(defaultIcon);
+                // Turns marker back to its original color depending on favorite result
+                if(this.favorite) {
+                    self.markerIcon(self.favoritedIcon);
+                } else {
+                    self.markerIcon(self.defaultIcon);
+                }
                 this.setIcon(self.markerIcon());
                 // Un-highlight list item
                 self.currentLocations()[this.index].highlight(false);
@@ -161,15 +186,81 @@ var ViewModel = function() {
 
     };
 
+    // Removes animation of any marker that is bouncing
+    this.turnOffMarkerAnimation = function() {
+        for (i = 0; i < self.markers().length; i++) {
+            if(self.markers()[i].getAnimation() !== null);
+            self.markers()[i].setAnimation(null);
+        }
+    }
+
+    // Add content to infowindow
     this.populateInfoWindow = function(marker, infowindow) {
         if (infowindow.marker != marker) {
             // Clear infowindow
             infowindow.setContent('');
             infowindow.marker = marker;
             // Close infowindow when x is clicked
-            infowindow.addListener('cloceclick', function() {
-                infowindow.setMarker(null);
+            infowindow.addListener('closeclick', function() {
+                self.turnOffMarkerAnimation();
+                infowindow.marker = null;
             });
+
+            // Start contentString
+            var contentString = '<div class="info-window">';
+
+            // Add location name
+            contentString += '<div class="info"><h3>' + marker.title + '</h3>';
+
+            // Add address p
+            contentString += '<p id="address"></p>';
+
+            // Close info div in contentString
+            contentString += '</div>';
+
+            // Add pano div
+            contentString += '<div id="pano"></div>';
+
+            // Close contentString
+            contentString += '</div>'
+
+            infowindow.setContent(contentString);
+
+            // Get Address with Geocoder
+            function getGeocoder() {
+                var geocoder = new google.maps.Geocoder;
+                var pos = marker.position;
+                var mi = marker.index;
+                var cci = self.currentCityIndex;
+                var address = self.cityLocations()[cci][mi].address;
+                if (address == '?'){ 
+                    geocoder.geocode({'location': pos}, function(results, status) {
+                        if (status === 'OK') {
+                            if (results[0]) {
+                                address = results[0].formatted_address;
+                                writeGeocoder(address, cci, mi);    
+                            } else {
+                                address = 'Address not available.'; 
+                                writeGeocoder(address, cci, mi);  
+                            }
+                        } else {
+                            address = 'Address not available.'; 
+                            console.log('Geocoder failed due to: ' + status);
+                            writeGeocoder(address, cci, mi); 
+                        }
+                    });
+                } else {
+                    writeGeocoder(address, cci, mi);
+                }
+            };
+            
+            getGeocoder();
+
+            // This function writes on the infowindow and it's called from inside the geocoder in order to wait for a callback
+            function writeGeocoder(address,cci, mi) {
+                self.cityLocations()[cci][mi].address = address;
+                $('.info-window #address').html(address);
+            }
 
             // Get StreetView on InfoWindow
             var streetViewService = new google.maps.StreetViewService();
@@ -179,7 +270,6 @@ var ViewModel = function() {
                 if (status == google.maps.StreetViewStatus.OK) {
                     var nearStreetViewLocation = data.location.latLng;
                     var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
-                    infowindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3></div><div id="pano"></div>');
                     var panoramaOptions = {
                         position: nearStreetViewLocation,
                         pov: {
@@ -189,48 +279,50 @@ var ViewModel = function() {
                     };
                     var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
                 } else {
-                    infowindow.setContent('<div class="info-window"><h3>' + marker.title + '</h3></div><div>No Street View Found</div>');
+                    contentString += '<div>No Street View Found</div>';
                 }
             }
 
+            // Call function
             streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
             infowindow.open(self.map, marker);
         }
     }
 
-    this.makeMarkerIcon = function(color) {
-        var markerImage = {
-            url: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + color,
-            size: new google.maps.Size(21, 34),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(10, 34),
-            scaledSize: new google.maps.Size(21, 34)
-        };
-        return markerImage;
-    }
-
     // Toggle favorite when Heart is clicked
     this.markAsFavorite = function(data) {
         var index = data.index;
         var marker = self.markers()[index];
-        console.log(index);
-        console.log(marker);
         if(data.favorite()) {
             data.favorite(false);
             // Recolor marker to default
-
-            // Update BoundsFavorite
-
+            self.markerIcon(self.defaultIcon);
         } else {
             data.favorite(true);
             // Recolor marker to red
-
-            // Update BoundsFavorite
-
+            self.markerIcon(self.favoritedIcon);
         }
+        self.markers()[index].favorite = !self.markers()[index].favorite;
+        self.markers()[index].setIcon(self.markerIcon());
         self.calculateBoundsForFavorite();
-        console.log(data.favorite());
+    }
+
+    // When currentCity is updated, recolor markers
+    this.recolorFavoriteMarkers = function() {
+        var markers = self.markers();
+        var marker;
+        var location;
+        for (var i = 0; i < markers.length; i++) {
+            location = self.cityLocations()[self.currentCityIndex][i];
+            marker = markers[i];
+            if (location.favorite()) {
+                self.markerIcon(self.favoritedIcon);
+            } else {
+                self.markerIcon(self.defaultIcon);
+            }
+            self.markers()[i].setIcon(self.markerIcon());
+        }
     }
 
     this.calculateBoundsForFavorite = function() {

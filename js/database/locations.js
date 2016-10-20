@@ -16,7 +16,7 @@ var database = {
 			}
 		},
 		{
-			title: "Californa Academy of Sciences",
+			title: "California Academy of Sciences",
 			coord: {
 				lat: "37.769865",
 				lng: "-122.466095"
@@ -304,6 +304,7 @@ for (var key in database) {
 			database[key][i].coord.lat = Number(database[key][i].coord.lat);
 			database[key][i].index = i;
 			database[key][i].highlight = ko.observable(false);
+			database[key][i].address = '?';
 		}
 	}
 }
