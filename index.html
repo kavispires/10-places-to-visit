@@ -29,18 +29,18 @@
             </header>
             
             <nav>
-                <div class="icon-float icon-map" data-bind=""></div>
-                <ul class="nav-list" data-bind="fadeVisible: toggleNavigationMenu, foreach: cityList">
+                <div class="icon-float icon-map" data-bind="click: toggleNavigationMenu"></div>
+                <ul class="nav-list" data-bind="visible: navigationMenu, foreach: cityList">
                     <li class="nav-item" data-bind="text: $data, click: $parent.updateCurrentCity"></li>
                 </ul>
             </nav>
 
             <main>
-                <div id="map"></div>
+                <div id="map" data-bind="click: hidefloaterWindow"></div>
             
-                <div class="icon-float icon-popup" data-bind=""></div>
+                <div class="icon-float icon-popup" data-bind="click: toggleFloaterWindow"></div>
 
-                <div class="floater" data-bind="">
+                <div class="floater" data-bind="visible: floaterWindow">
                     <hr>
                     <h3>10 Places in <span data-bind="text: currentCity"></span></h3>
                     <input id="search-field" type="text" name="search" placeholder="Type to filter a location" data-bind=""> <button id="search-btn" data-bind="">X</button><br>

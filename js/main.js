@@ -1,17 +1,39 @@
 var ViewModel = function() {
     var self = this;
 
+    /* MENUS */
     // Hamburger Menus for Small Screens
-    this.toggleNavigationMenu = ko.observable();
-    this.toggleFloaterWindow = ko.observable();
+    this.smallScreen = ko.observable();
+    this.navigationMenu = ko.observable();
+    this.floaterWindow = ko.observable();
     var windowWidth = $(window).width();
-    if (windowWidth < 680) {
-        this.toggleNavigationMenu(false);
-        this.toggleFloaterWindow(false);
+    if(windowWidth < 680) this.smallScreen(true);
+    if (this.smallScreen()) {
+        this.navigationMenu(false);
+        this.floaterWindow(false);
     } else {
-        this.toggleNavigationMenu(true);
-        this.toggleFloaterWindow(true);
+        this.navigationMenu(true);
+        this.floaterWindow(true);
     }
+
+    // Show/Hide .nav-list
+    this.toggleNavigationMenu = function() {
+        self.navigationMenu(!self.navigationMenu());
+        // Always hides floater, in small screens
+        self.hidefloaterWindow();
+    }
+
+    // Show/hide .floater
+    this.toggleFloaterWindow = function() {
+        self.floaterWindow(!self.floaterWindow());
+    }
+
+    // Always hides floater, in small screens
+    this.hidefloaterWindow = function() {
+        if(self.smallScreen) self.floaterWindow(false);
+    }
+
+    /* APP FEATURES */
 
     this.cityList = ko.observableArray([]); // Contains just the city names
     this.cityLocations = ko.observableArray([]); // Contains arrays with the city locations objects
@@ -44,6 +66,8 @@ var ViewModel = function() {
         self.currentCityIndex = index;
         // Recolor Markers
         self.recolorFavoriteMarkers(data);
+        // if smallScreen only, close nav
+        if(self.smallScreen) self.navigationMenu(false);
     }
 
     // Show Favotires/Show All Locations

@@ -147,7 +147,7 @@ nav {
 
 .nav-list {
     list-style-type: none;
-    display: none;
+    /*display: none;*/
     position: relative;
     right: 0;
     top: 0;
@@ -185,7 +185,7 @@ nav {
 /* FLOATER */
 
 .floater {
-    display: none;
+    /*display: none;*/
     font-size: 80%;
     position: absolute;
     left: 10px;
@@ -196,6 +196,8 @@ nav {
     border: 1px solid #e5e5e5;
     z-index: 1000;
     border-radius: 3px;
+    height: 40vh;
+    overflow-y: hidden;
 }
 
 .floater hr {
@@ -227,8 +229,10 @@ nav {
 
 .location-list {
     list-style-type: none;
-    margin: 0;
+    margin: 5px 0;
     padding: 10px 0 0 0;
+    overflow-y: auto;
+    height: 70%;
 }
 
 .location-item {
@@ -328,6 +332,7 @@ small {
     }
 
     .nav-list {
+        float: none;
         display: flex;
         justify-content: space-around;
         background: #fafafa;
