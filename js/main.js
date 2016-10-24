@@ -115,6 +115,12 @@ var ViewModel = function() {
         }
     }
 
+    this.zoomOut = function() {
+        //self.bounds(self.boundsAll);
+        self.map.setZoom(12);
+        self.map.fitBounds(self.bounds());
+    }
+
     // Inicialize Map
     this.map = ko.observable();
     this.markers = ko.observableArray([]);

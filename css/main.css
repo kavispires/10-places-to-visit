@@ -147,12 +147,13 @@ nav {
 
 .nav-list {
     list-style-type: none;
-    /*display: none;*/
-    position: relative;
+    width: 100%;
+    position: absolute;
+    background: #fff;
     right: 0;
     top: 0;
     z-index: 75;
-    padding: 65px 20px 0 40px;
+    padding: 130px 20px 0 40px;
 }
 
 .nav-item {
@@ -204,6 +205,12 @@ nav {
     margin-top: 0;
 }
 
+.close-floater {
+    position: absolute;
+    top: 1px;
+    right: 10px;
+}
+
 #search-field {
     width: 80%;
     border-radius: 3px;
@@ -216,7 +223,7 @@ nav {
     border: 1px outset #ddd;
 }
 
-.toggle-favorite, .toggle-markers {
+.toggle-favorite, .toggle-markers, .zoom-out {
     color: #222;
     font-size: .75em;
     margin-right: 10px;
@@ -230,7 +237,7 @@ nav {
 .location-list {
     list-style-type: none;
     margin: 5px 0;
-    padding: 10px 0 0 0;
+    padding: 10px 0;
     overflow-y: auto;
     height: 70%;
 }
@@ -362,6 +369,11 @@ small {
         width: 30%;
         border-radius: 5px;
         z-index: 1000;
+        height: auto;
+    }
+
+    .close-floater {
+        display: none;
     }
 
     small {
