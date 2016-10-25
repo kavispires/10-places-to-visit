@@ -30,7 +30,7 @@ var ViewModel = function() {
 
     // Always hides floater, in small screens
     this.hidefloaterWindow = function() {
-        if(self.smallScreen) self.floaterWindow(false);
+        if(self.smallScreen()) self.floaterWindow(false);
     }
 
     /* APP FEATURES */
@@ -225,6 +225,7 @@ var ViewModel = function() {
     }
 
     // Add content to infowindow
+    this.geocodeAddress = ko.observable();
     this.populateInfoWindow = function(marker, infowindow) {
         if (infowindow.marker != marker) {
             // Clear infowindow
@@ -243,7 +244,7 @@ var ViewModel = function() {
             contentString += '<div class="info"><h3>' + marker.title + '</h3>';
 
             // Add address p
-            contentString += '<p id="address"></p>';
+            contentString += '<p id="address" data-bind="text: geocodeAddress"></p>';
 
             // Close info div in contentString
             contentString += '</div>';
@@ -253,6 +254,8 @@ var ViewModel = function() {
 
             // Close contentString
             contentString += '</div>'
+
+            contentString = $.parseHTML(contentString)[0];
 
             infowindow.setContent(contentString);
 
@@ -289,7 +292,9 @@ var ViewModel = function() {
             // This function writes on the infowindow and it's called from inside the geocoder in order to wait for a callback
             function writeGeocoder(address,cci, mi) {
                 self.cityLocations()[cci][mi].address = address;
-                $('.info-window #address').html(address);
+                self.geocodeAddress(address);
+                console.log(self.geocodeAddress());
+                ko.applyBindings(self, $("#address")[0]);
             }
 
             // Get StreetView on InfoWindow

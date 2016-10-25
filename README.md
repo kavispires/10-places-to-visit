@@ -5,9 +5,10 @@
 #### TODO
 
 - Filtering by typing location
-- Responsive menus
+- Add third-party API (foursquare)
 
 #### DONE
+- Responsive menus
 - Markers are highlighted when hover on list
 - When favorite, make marker red
 - Favorite color is carried when City is changed
