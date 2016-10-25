@@ -1,19 +1,36 @@
 var ViewModel = function() {
     var self = this;
 
-    /* MENUS */
+    // Initialize all starting functions (this function is only called at the end of the ViewModel)
+    this.initApp = function() {
+        // Screen Size
+        self.determineScreenSize();
+        // Populates observables: cityList, cityLocations, currentCity and currentLocations 
+        self.populateCityObservables();
+        // Initiate map
+        self.initMap();
+    }
+
+    /*  --------------
+        MENUS 
+        -------------- */
+
     // Hamburger Menus for Small Screens
     this.smallScreen = ko.observable();
     this.navigationMenu = ko.observable();
     this.floaterWindow = ko.observable();
-    var windowWidth = $(window).width();
-    if(windowWidth < 680) this.smallScreen(true);
-    if (this.smallScreen()) {
-        this.navigationMenu(false);
-        this.floaterWindow(false);
-    } else {
-        this.navigationMenu(true);
-        this.floaterWindow(true);
+    
+    // Populate observables based on screensize
+    this.determineScreenSize = function(){
+        var windowWidth = $(window).width();
+        if(windowWidth < 680) self.smallScreen(true);
+        if (self.smallScreen()) {
+            self.navigationMenu(false);
+            self.floaterWindow(false);
+        } else {
+            self.navigationMenu(true);
+            self.floaterWindow(true);
+        }
     }
 
     // Show/Hide .nav-list
@@ -33,28 +50,36 @@ var ViewModel = function() {
         if(self.smallScreen()) self.floaterWindow(false);
     }
 
-    /* APP FEATURES */
+    /*  --------------
+        APP FEATURES 
+        -------------- */
 
     this.cityList = ko.observableArray([]); // Contains just the city names
     this.cityLocations = ko.observableArray([]); // Contains arrays with the city locations objects
 
     // Populate cityList with city names from database
     // Also, populate cityLocations with objects for each city [city[locations{}]] from database
-    for (var key in database) {
-        this.cityList.push(key);
-        var cityArr = [];
-        if (database.hasOwnProperty(key)) {
-            for (var i = 0; i < database[key].length; i++) {
-                cityArr.push(database[key][i]);
+    // Then populates currentCity and cityLocations
+    this.populateCityObservables = function() {
+        for (var key in database) {
+            self.cityList.push(key);
+            var cityArr = [];
+            if (database.hasOwnProperty(key)) {
+                for (var i = 0; i < database[key].length; i++) {
+                    cityArr.push(database[key][i]);
+                }
             }
+            self.cityLocations.push(cityArr);
         }
-        this.cityLocations.push(cityArr);
+        // Populate currentCity and currentLocations
+        self.currentCity(self.cityList()[self.currentCityIndex]);
+        self.currentLocations(self.cityLocations()[self.currentCityIndex]);
     }
 
     // Determine current City and Locations
     this.currentCityIndex = 0;
-    this.currentCity = ko.observable(this.cityList()[this.currentCityIndex]);
-    this.currentLocations = ko.observableArray(this.cityLocations()[this.currentCityIndex]);
+    this.currentCity = ko.observable();
+    this.currentLocations = ko.observableArray();
 
     // .nav-item click updates currentCity and cuttentLocations
     this.updateCurrentCity = function(data) {
@@ -294,7 +319,7 @@ var ViewModel = function() {
                 self.cityLocations()[cci][mi].address = address;
                 self.geocodeAddress(address);
                 console.log(self.geocodeAddress());
-                ko.applyBindings(self, $("#address")[0]);
+                ko.applyBindings(self, $('#address')[0]);
             }
 
             // Get StreetView on InfoWindow
@@ -402,7 +427,7 @@ var ViewModel = function() {
         self.markers()[data.index].setIcon(self.markerIcon());
     }
 
-    this.initMap();
+    this.initApp();
 }
 
 
