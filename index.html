@@ -44,10 +44,12 @@
                     <hr>
                     <div class="close-floater" data-bind="click: hidefloaterWindow">x</div>
                     <h3>10 Places in <span data-bind="text: currentCity"></span></h3>
-                    <input id="search-field" type="text" name="search" placeholder="Type to filter a location" data-bind=""> <button id="search-btn" data-bind="">X</button><br>
-                    <a class="toggle-favorite" href="#" data-bind="text: toggleFavoriteLink, click: toggleFavorite">Show Only Favorites</a>  <a class="toggle-markers" hreft="#" data-bind="text: toggleMarkersLink, click: toggleMarkers">Hide all markers</a>  <a class="zoom-out" href="#" data-bind="click: zoomOut">Zoom out</a>
+                    <input id="search-field" type="text" name="search" placeholder="Type to filter a location" data-bind="textInput: filter"> <button id="search-btn" data-bind="click: clearInputTextField">X</button><br>
+                    <a class="toggle-favorite" href="#" data-bind="text: toggleFavoriteLink, click: toggleFavorite">Show Only Favorites</a>  <a class="toggle-markers" hreft="#" data-bind="text: toggleMarkersLink, click: toggleMarkers">Hide all markers</a>  <a class="zoom-out" href="#" data-bind="click: resetZoom">Zoom out</a>
                     <ul class="location-list" data-bind="foreach: currentLocations">
+                        <!--ko if: filtered()-->
                         <li class="location-item" data-bind="visible: favorite() == $parent.favoriteStatus() || $parent.favoriteStatus() == false, css:{ 'location-highlight': highlight() == true}, event: { mouseover: $parent.highlightMarkerOn, mouseout: $parent.highlightMarkerOff}"><span class="location-title" data-bind="text: title, click: $parent.focusMarker"></span><span class="icon-heart" data-bind="click: $parent.markAsFavorite, css:{ 'favorited-heart': favorite() == true}"></span></li>
+                        <!--/ko-->
 
                     </ul>
                 </div>

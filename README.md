@@ -4,10 +4,11 @@
 
 #### TODO
 
-- Filtering by typing location
-- Add third-party API (foursquare)
+
+- Add third-party API (foursquare or instagram)
 
 #### DONE
+- Filtering by typing location
 - Responsive menus
 - Markers are highlighted when hover on list
 - When favorite, make marker red

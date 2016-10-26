@@ -339,11 +339,12 @@ small {
     }
 
     .nav-list {
+        position: static;
         float: none;
         display: flex;
         justify-content: space-around;
         background: #fafafa;
-        border-bottom: 1px solid #e5e5e5;
+        border-bottom: 2px solid #C1C1C1;
         box-shadow: 0 0 5px #222;
         width: 100vw;
         margin: 0;

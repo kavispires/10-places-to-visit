@@ -299,11 +299,12 @@ var database = {
 for (var key in database) {
 	if (database.hasOwnProperty(key)) {
 		for (var i = 0; i < database[key].length; i++) {
-			database[key][i].favorite = ko.observable(false);
 			database[key][i].coord.lng = Number(database[key][i].coord.lng);
 			database[key][i].coord.lat = Number(database[key][i].coord.lat);
 			database[key][i].index = i;
+			database[key][i].favorite = ko.observable(false);
 			database[key][i].highlight = ko.observable(false);
+			database[key][i].filtered = ko.observable(true);
 			database[key][i].address = '?';
 		}
 	}

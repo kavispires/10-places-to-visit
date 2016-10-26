@@ -7,6 +7,8 @@ var ViewModel = function() {
         self.determineScreenSize();
         // Populates observables: cityList, cityLocations, currentCity and currentLocations 
         self.populateCityObservables();
+        // Populates filter list (this function is also called whenever currentCity is updated)
+        self.populatefilterList();
         // Initiate map
         self.initMap();
     }
@@ -85,14 +87,19 @@ var ViewModel = function() {
     this.updateCurrentCity = function(data) {
         // Update currentCity
         var index = self.cityList.indexOf(data);
-        self.currentCity(self.cityList()[index]);
-        self.currentLocations(self.cityLocations()[index]);
-        self.initMap();
-        self.currentCityIndex = index;
-        // Recolor Markers
-        self.recolorFavoriteMarkers(data);
+        // Run only if new city is different than currentCity
+        if(index !== self.currentCityIndex) {
+            self.currentCity(self.cityList()[index]);
+            self.currentLocations(self.cityLocations()[index]);
+            self.initMap();
+            self.currentCityIndex = index;
+            // Recolor Markers
+            self.recolorFavoriteMarkers(data);
+            // Updates search field filter list
+            self.populatefilterList();
+        }
         // if smallScreen only, close nav
-        if(self.smallScreen) self.navigationMenu(false);
+        if(self.smallScreen()) self.navigationMenu(false);
     }
 
     // Show Favotires/Show All Locations
@@ -140,11 +147,9 @@ var ViewModel = function() {
         }
     }
 
-    this.zoomOut = function() {
-        //self.bounds(self.boundsAll);
-        self.map.setZoom(12);
-        self.map.fitBounds(self.bounds());
-    }
+    /*  --------------
+        MAP FEATURES 
+        -------------- */
 
     // Inicialize Map
     this.map = ko.observable();
@@ -318,7 +323,6 @@ var ViewModel = function() {
             function writeGeocoder(address,cci, mi) {
                 self.cityLocations()[cci][mi].address = address;
                 self.geocodeAddress(address);
-                console.log(self.geocodeAddress());
                 ko.applyBindings(self, $('#address')[0]);
             }
 
@@ -409,6 +413,12 @@ var ViewModel = function() {
         self.map.setZoom(17);
     }
 
+    this.resetZoom = function() {
+        //self.bounds(self.boundsAll);
+        self.map.setZoom(12);
+        self.map.fitBounds(self.bounds());
+    }
+
     // When mouseover list-item, recolor corresponding marker to white (highlitedned icon)
     this.highlightMarkerOn = function(data) {
         self.markerIcon(self.highlightedIcon);
@@ -427,6 +437,79 @@ var ViewModel = function() {
         self.markers()[data.index].setIcon(self.markerIcon());
     }
 
+    /*  --------------
+        INPUT FIELD FILTERING 
+        -------------- */
+
+    // Input Text Field
+    this.filter = ko.observable('');
+    this.filterList = ko.observableArray([]);
+
+     // Populate filterList with currentCity location names
+    this.populatefilterList = function() {
+        var index = self.currentCityIndex;
+        var locationList = self.currentLocations();
+        var locationName;
+        // Get location names from currentCity, convert name (trimString) and push them to filterList
+        for (var i = 0; i < locationList.length; i++) {
+            locationName = locationList[i].title;
+            locationName = self.trimString(locationName);
+            self.filterList.push(locationName);
+        }
+    }
+
+    // Trims 'string' removing all the whitespace and converting to lowercase
+    this.trimString = function(string) {
+        string = string.toLowerCase().trim().replace(/\s+/g, '');
+        return string;
+    }
+
+    // Filter locations list on screen
+    this.filter.subscribe(function() {
+        var typed = self.trimString(self.filter());
+        var list = self.filterList();
+        var i, match;
+        var indexArray = [];   
+        // Iterate though all items on list and compared typed with each, push index to indexArray
+        $.each(list, function(index, element) {
+            for(i = 0; i < element.length; i++){
+                match = element.indexOf(typed);
+                if(match > -1){
+                    indexArray.push(index);
+                }
+            }
+        });
+        // Clear all filtered() observables to false
+        $.each(self.currentLocations(), function(index, element){
+            self.currentLocations()[index].filtered(false);
+        });
+        // Continues if indexArrey has at least one element
+        if (indexArray.length > 0) {
+            // Remove duplicate indexes in indexArray
+            var tempArray = [];
+            $.each(indexArray, function(index, element){
+                if($.inArray(element, tempArray) === -1) tempArray.push(element);
+            });
+            indexArray = tempArray;
+            // Loop through indexes and update filtered() observable
+            for(i = 0; i < indexArray.length; i++){
+                self.currentLocations()[indexArray[i]].filtered(true);
+            }
+        } else {
+            console.log('No matches.');
+        }
+    });
+
+    // 'x' clear button for Input Text Field
+    this.clearInputTextField = function() {
+        self.filter('');
+    }
+
+    /*  --------------
+        INITIATE APP 
+        -------------- */
+
+    // After all code is read, initiates app
     this.initApp();
 }
 
