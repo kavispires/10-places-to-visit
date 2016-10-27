@@ -125,18 +125,18 @@ var ViewModel = function() {
     }
 
     // Toggle Markers
-    this.toggleMarkersLink = ko.observable('Hide all markers');
+    this.toggleMarkersLink = ko.observable('Hide Markers');
     this.toggleMarkers = function(data) {
         var active = self.toggleMarkersLink()
-        if (active == "Hide all markers") {
-            self.toggleMarkersLink('Show all markers');
+        if (active == "Hide Markers") {
+            self.toggleMarkersLink('Show Markers');
             // Hide all markers
             for (var i = 0; i < self.markers().length; i++) {
                 self.markers()[i].setMap(null);
             }
 
         } else {
-            self.toggleMarkersLink('Hide all markers');
+            self.toggleMarkersLink('Hide Markers');
             // Show all markers
             var bounds = new google.maps.LatLngBounds();
             for (var i = 0; i < self.markers().length; i++) {
@@ -157,6 +157,8 @@ var ViewModel = function() {
     this.bounds = ko.observable();
     this.boundsAll;
     this.boundsFavorites;
+    // Tracker for the first time a infowindow is being opened
+    this.firstTime = true;
 
     // Create Markers
     this.makeMarkerIcon = function(color) {
@@ -176,6 +178,8 @@ var ViewModel = function() {
     this.favoritedIcon = this.makeMarkerIcon('c1272d'); //TODO
     this.markerIcon = ko.observable(self.defaultIcon);
 
+    this.largeInfowindow = new google.maps.InfoWindow();
+
     this.initMap = function() {
         // Clear markers
         self.markers([]);
@@ -190,7 +194,6 @@ var ViewModel = function() {
             mapTypeControl: false
         });
 
-        var largeInfowindow = new google.maps.InfoWindow();
         var bounds = new google.maps.LatLngBounds();
         
         // Add Markers to markers
@@ -206,22 +209,26 @@ var ViewModel = function() {
                 icon: self.markerIcon(),
                 animation: google.maps.Animation.DROP,
                 index: i,
-                favorite: false
+                favorite: false,
+                fsid: ko.observable(self.currentLocations()[i].fsid()),
+                photos: ko.observableArray(self.currentLocations()[i].photos()),
             });
 
             self.markers.push(marker);
+            console.log(marker.fsid()); //DELETE
 
             // Marker Listeners
             marker.addListener('click', function() {
-                self.populateInfoWindow(this, largeInfowindow);
+                // Open windowindow
+                self.populateInfoWindow(this, self.largeInfowindow);
                 // Toggle animation
                 self.turnOffMarkerAnimation();
                 this.setAnimation(google.maps.Animation.BOUNCE);
             });
             marker.addListener('mouseover', function() {
+                // Highlight list item and marker
                 self.markerIcon(self.highlightedIcon);
                 this.setIcon(self.markerIcon());
-                // Highlight list item
                 self.currentLocations()[this.index].highlight(true);
             });
             marker.addListener('mouseout', function() {
@@ -265,6 +272,7 @@ var ViewModel = function() {
             infowindow.addListener('closeclick', function() {
                 self.turnOffMarkerAnimation();
                 infowindow.marker = null;
+                ko.cleanNode(self, $('#address')[0]);
             });
 
             // Start contentString
@@ -279,6 +287,9 @@ var ViewModel = function() {
             // Close info div in contentString
             contentString += '</div>';
 
+            // Add foursquare photos div
+            contentString += '<div id="photos" data-bind="foreach: photos"><img src="" data-bind="attr: {src: photos}"></div>';
+
             // Add pano div
             contentString += '<div id="pano"></div>';
 
@@ -288,6 +299,10 @@ var ViewModel = function() {
             contentString = $.parseHTML(contentString)[0];
 
             infowindow.setContent(contentString);
+
+            /*
+            GOOGLE GEOCODER
+            */
 
             // Get Address with Geocoder
             function getGeocoder() {
@@ -323,8 +338,26 @@ var ViewModel = function() {
             function writeGeocoder(address,cci, mi) {
                 self.cityLocations()[cci][mi].address = address;
                 self.geocodeAddress(address);
-                ko.applyBindings(self, $('#address')[0]);
+                console.log('Writing Geocoder address...');
+                ko.applyBindings(self, $('#address')[0]);               
             }
+
+            /*
+            FOURSQUARE
+            */
+
+            // Get place id with Foursquare API
+            self.getFoursquareID(marker);
+
+            // Subscripe to fsid, tracking if it changes
+            marker.fsid.subscribe(function(){
+                console.log('Getting Photos...'); //DELETE
+                self.getFoursquarePhotos(marker);
+            });
+
+            /*
+            GOOGLE STREETVIEW
+            */
 
             // Get StreetView on InfoWindow
             var streetViewService = new google.maps.StreetViewService();
@@ -405,9 +438,23 @@ var ViewModel = function() {
         self.boundsFavorites = boundsfav;
     }
 
-    // When list-item is clicked, zoom on corresponding marker
-    this.focusMarker = function(data) {
+    // Location list item is clicked
+    this.listItemClick = function(data) {
         var marker = self.markers()[data.index];
+        self.focusMarker(data, marker)
+        self.openMarkerInfoWindow(data, marker);
+    }
+
+    // Open corresponding marker's infowindow
+    this.openMarkerInfoWindow = function(data, marker) {
+        self.populateInfoWindow(marker, self.largeInfowindow);
+        // Toggle animation
+        self.turnOffMarkerAnimation();
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+
+    // Zoom on corresponding marker
+    this.focusMarker = function(data, marker) {
         var latLng = marker.getPosition();
         self.map.setCenter(latLng);
         self.map.setZoom(17);
@@ -435,6 +482,83 @@ var ViewModel = function() {
             self.markerIcon(self.defaultIcon);
         }
         self.markers()[data.index].setIcon(self.markerIcon());
+    }
+
+    /*  --------------
+        FOURSQUARE API 
+        -------------- */
+
+    // Determine photosize based on screen size
+    this.photosize = function(){
+        if(self.smallScreen()){
+            return "100x100";
+        } else {
+            return "100x100";
+        }   
+    }
+
+    // Request ID
+    this.getFoursquareID = function(marker) {
+        // Only if it doens't have one already
+        if(!marker.fsid()){
+                console.log('Requesting ID...');
+                // Build url
+                var url = self.buidFoursquareIdUrl(marker);
+                // Request ID and write on Location
+                $.getJSON(url,
+                    function(data) {
+                        $.each(data.response.venues, function(i,venues){
+                            marker.fsid(venues.id);
+                            self.currentLocations()[marker.index].fsid(venues.id);
+                            console.log(self.currentLocations()[marker.index].fsid());
+                       });
+                });
+            } else {
+                console.log("It already has an ID.");
+            }
+    }
+
+    // Build ID Request URL
+    this.buidFoursquareIdUrl = function(marker){
+        var url = 'https://api.foursquare.com/v2/venues/search' +
+        '?client_id=' + fs_clientid +
+        '&client_secret=' + fs_clientsecret +
+        '&v=20130815&ll=' + marker.position.lat() + "," + marker.position.lng() + "&intent=checkin&radius=500" +
+        "&limit=3";
+        return url;
+    }
+
+    // Request Photos
+    this.getFoursquarePhotos = function(marker) {
+        // Only if it doesn't have photos already
+        console.log(marker.photos());
+        if(marker.photos().length === 0){
+            console.log('Requesting Photos...');
+            // Build photo url
+            var url = self.buidFoursquarePhotoUrl(marker);
+            // Request Photos and push to Location photos
+            $.getJSON(url,
+                function(data) {
+                    $.each(data.response.photos.items, function(i,photo){                   
+                        photo_url = photo.prefix + self.photosize() + photo.suffix;
+                        // Push photo_url to observable arrays
+                        marker.photos.push(photo_url);
+                        self.currentLocations()[marker.index].photos(photo_url);
+                    });
+                    console.log(self.currentLocations()[marker.index].photos());
+            });  
+        } else {
+            console.log("It already has array of Photos");
+        }
+    }
+
+    // Build Photos Request URL
+    this.buidFoursquarePhotoUrl = function(marker){
+        var url = 'https://api.foursquare.com/v2/venues/' + marker.fsid() +
+        '/photos?client_id=' + fs_clientid +
+        '&client_secret=' + fs_clientsecret +
+        '&v=20130815&limit=3';
+        return url;
     }
 
     /*  --------------

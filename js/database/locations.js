@@ -2,7 +2,7 @@ var database = {
 	"San Francisco" :
 	[
 		{
-			title: "Alcatraz",
+			title: "Alcatraz Island",
 			coord: {
 				lat: "37.826723",
 				lng: "-122.421067"
@@ -293,19 +293,23 @@ var database = {
 	]
 }
 
-// Add favorite key to each item/location in each city in data
-// Turn coordinates into numbers (not strings)
-
+// Add keys and observables to each item/location in each city in data
 for (var key in database) {
 	if (database.hasOwnProperty(key)) {
 		for (var i = 0; i < database[key].length; i++) {
-			database[key][i].coord.lng = Number(database[key][i].coord.lng);
-			database[key][i].coord.lat = Number(database[key][i].coord.lat);
+			database[key][i].coord.lng = Number(database[key][i].coord.lng); // Turn longitude into number
+			database[key][i].coord.lat = Number(database[key][i].coord.lat); // Turn latitude into number
 			database[key][i].index = i;
 			database[key][i].favorite = ko.observable(false);
 			database[key][i].highlight = ko.observable(false);
 			database[key][i].filtered = ko.observable(true);
+			database[key][i].fsid = ko.observable(); // For FourSquare API (id)
+			database[key][i].photos = ko.observableArray([]); // For FourSquare API (photos)
 			database[key][i].address = '?';
 		}
 	}
 }
+
+// FourSquare API info
+var fs_clientid = 'QHTGTJMDW5X5BHTRZV1TLG4MFNS1TYSWR4HDXIBBL3KKZ0LS';
+var fs_clientsecret = '05YO0RJYNTQN5NCUMGDMM01TW1HCGHWSIE0ZH3GW1JASB5ZH';

@@ -223,9 +223,9 @@ nav {
     border: 1px outset #ddd;
 }
 
-.toggle-favorite, .toggle-markers, .zoom-out {
+.filters {
     color: #222;
-    font-size: .75em;
+    font-size: .6em;
     margin-right: 10px;
     cursor: pointer;
 }
@@ -240,6 +240,7 @@ nav {
     padding: 10px 0;
     overflow-y: auto;
     height: 70%;
+    overflow-x: hidden;
 }
 
 .location-item {
@@ -299,7 +300,8 @@ nav {
 }
 
 #pano {
-    width: 220px;
+    width: 100%;
+    min-width: 200px;
     height: 200px;
 }
 
@@ -315,25 +317,18 @@ footer {
 }
 
 small {
-    font-size: 60%;
+    font-size: 50%;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    Media Queries
    ========================================================================== */
 
-@media screen and (min-width:680px) { 
+@media screen and (min-width:480px) {
+
+}
+
+@media screen and (min-width:680px) {
     .icon-float {
         display: none;
     }
@@ -371,6 +366,16 @@ small {
         border-radius: 5px;
         z-index: 1000;
         height: auto;
+        max-height: 60vh;
+    }
+
+    .filters {
+        font-size: .75em;
+    }
+
+    .location-list {
+        max-height: 30vh;
+        overflow-y: auto;
     }
 
     .close-floater {
@@ -378,11 +383,11 @@ small {
     }
 
     small {
-        font-size: 100%;
+        font-size: 70%;
     }
 
     #pano {
-        width: 300px;
+        min-width: 240px;
         height: 200px;
     }
 
@@ -436,3 +441,8 @@ small {
     *zoom: 1;
 }
 
+
+.image {
+    outline: 1px orange solid;
+    width: 100px;
+}

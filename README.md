@@ -4,10 +4,11 @@
 
 #### TODO
 
-
-- Add third-party API (foursquare or instagram)
+- Add third-party API (foursquare)
+- Fix multiple bindings error
 
 #### DONE
+- When list-item is clicked, open infowindow
 - Filtering by typing location
 - Responsive menus
 - Markers are highlighted when hover on list
@@ -19,5 +20,5 @@
 - Implement Favorite 
 - Favorite Filtering 
 - Markers are not resetting (show/hide all)
-- When list item clicked zoom in that item marker
+- When list-item is clicked, zoom in that item marker
 - When filtering favorites, bounds are set to those favorite locations
