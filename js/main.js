@@ -14,6 +14,38 @@ var ViewModel = function() {
     };
 
     /*  --------------
+        LOCAL STORAGE
+        -------------- */
+
+    // Reads localStorage and updates cityLocations observable
+    this.userSavedFavorites = function() {
+        // Check if Browser supports localStorage
+        if (typeof(Storage) !== 'undefined') {
+            var localData = window.localStorage;
+            // Check if saved data is meant for this app
+            if(localData['app'] == '10places') {
+                // Loop through object
+                var cityNumber, locationNumber;
+                for(var i = 0; i < localData.length - 1; i++) {
+                    cityNumber = Number(localData.key(i)[0]);
+                    locationNumber = Number(localData.key(i)[1]);
+                    // Update favorites
+                    self.cityLocations()[cityNumber][locationNumber].favorite(true);
+                }
+                
+            } else {
+                // If localStorage data is not for this app, clear it and reset it
+                window.localStorage.clear();
+                window.localStorage.setItem('app', '10places');
+            }
+        } else {
+            console.log('No browser Web Storage support. No data will be saved.');
+        }
+    }
+
+    
+
+    /*  --------------
         MENUS 
         -------------- */
 
@@ -73,6 +105,8 @@ var ViewModel = function() {
             }
             self.cityLocations.push(cityArr);
         }
+        // Restore saved data
+        self.userSavedFavorites();
         // Populate currentCity and currentLocations
         self.currentCity(self.cityList()[self.currentCityIndex]);
         self.currentLocations(self.cityLocations()[self.currentCityIndex]);
@@ -157,7 +191,6 @@ var ViewModel = function() {
     this.bounds = ko.observable();
     this.boundsAll;
     this.boundsFavorites;
-    this.fakeMarker = fakemarker;
 
     // Create Markers
     this.makeMarkerIcon = function(color) {
@@ -174,7 +207,7 @@ var ViewModel = function() {
     // Markers Styles
     this.defaultIcon = this.makeMarkerIcon('63bde2');
     this.highlightedIcon = this.makeMarkerIcon('fff');
-    this.favoritedIcon = this.makeMarkerIcon('c1272d'); //TODO
+    this.favoritedIcon = this.makeMarkerIcon('c1272d');
     this.markerIcon = ko.observable(self.defaultIcon);
 
     this.largeInfowindow = new google.maps.InfoWindow();
@@ -212,6 +245,12 @@ var ViewModel = function() {
                 fsid: ko.observable(self.currentLocations()[i].fsid()),
                 photos: ko.observableArray(self.currentLocations()[i].photos()),
             });
+
+            // Recolor marker if it's favorited
+            if(self.currentLocations()[i].favorite()) {
+                marker.icon = self.favoritedIcon;
+                marker.favorite = true;
+            } 
 
             self.markers.push(marker);
 
@@ -358,7 +397,6 @@ var ViewModel = function() {
 
             // Subscripe to fsid, tracking if it changes
             marker.fsid.subscribe(function(){
-                console.log('Getting Photos...'); //DELETE
                 self.getFoursquarePhotos(marker);
             });
 
@@ -398,14 +436,17 @@ var ViewModel = function() {
     this.markAsFavorite = function(data) {
         var index = data.index;
         var marker = self.markers()[index];
-        var key = self.currentCityIndex + index;
-        key = key.toString();
+        var key = self.currentCityIndex.toString() + index.toString();
         if(data.favorite()) {
+            // Remove from localStorage
+            window.localStorage.removeItem(key);
             // Change favorite value
             data.favorite(false);
             // Recolor marker to default
             self.markerIcon(self.defaultIcon);
         } else {
+            // Save to localStorage
+            window.localStorage.setItem(key, true);
             // Change favorite value
             data.favorite(true);
             // Recolor marker to red

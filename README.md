@@ -6,6 +6,7 @@
 
 
 #### DONE
+- LocalStorage implemented
 - Add third-party API (foursquare)
 - When list-item is clicked, open infowindow
 - Filtering by typing location
