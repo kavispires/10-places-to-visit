@@ -325,7 +325,7 @@ var ViewModel = function() {
             contentString += '</div>';
 
             // Add foursquare photos div
-            contentString += '<div id="photos" data-bind="foreach: infowindowPhotos"><img src="" data-bind="attr: {src: $data}"></div>';
+            contentString += '<div id="photos" data-bind="foreach: infowindowPhotos"><img src="" data-bind="attr: {src: $data}, click: $parent.openModal"></div>';
 
             // Add foursquare photo credits
             contentString += '<small>Images powered by <a href="http://www.foursquare.com" target="_blank">FourSquare</a>.</small>';
@@ -427,6 +427,9 @@ var ViewModel = function() {
 
             // Call function
             streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
+            // Updates modalCaption with location title
+            self.modalCaption(marker.title);
 
             infowindow.open(self.map, marker);
         }
@@ -611,6 +614,35 @@ var ViewModel = function() {
         '&v=20130815&limit=3';
         return url;
     };
+
+    /*  --------------
+        MODAL WINDOW for FOURSQUARE PHOTOS
+        -------------- */
+
+    this.toggleModal = ko.observable(false);
+    this.modalImage = ko.observable();
+    this.modalCaption = ko.observable();
+
+    // Opens Modal and updates modalImage observable
+    this.openModal = function(data) {
+        // Get Image url and remove the size
+        var url = data.split(self.photosize());
+        // Apply new size
+        if(self.smallScreen()){
+            url.push("300x300");
+        } else {
+            url.push("600x600");
+        }  
+        // Update modal image with new url
+        url = url[0] + url[2] + url[1];
+        self.modalImage(url);
+        self.toggleModal(true);
+    }
+
+    // Closes Modal
+    this.closeModal = function() {
+        self.toggleModal(false);
+    }
 
     /*  --------------
         INPUT FIELD FILTERING 

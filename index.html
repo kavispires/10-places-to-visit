@@ -59,6 +59,13 @@
             <footer>
                 <small>Application created for Udacity FEND course by <a href="http://github.com/kavispires" target="_blank">Fabiano 'Kavis' Pires.</a></small>
             </footer>
+
+            <div class="modal modal-overlay" data-bind="visible: toggleModal, click: closeModal">
+                <div class="modal-image">
+                    <img class="image" src="" data-bind="attr: {src: modalImage}">
+                    <p class="caption"><span data-bind="text: modalCaption"></span><br><span class="caption-source">Image provided by Foursquare.</span></p>
+                </div>
+            </div>
         </div><!-- /container -->
 
 <!--         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
