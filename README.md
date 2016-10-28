@@ -4,10 +4,9 @@
 
 #### TODO
 
-- Add third-party API (foursquare)
-- Fix multiple bindings error
 
 #### DONE
+- Add third-party API (foursquare)
 - When list-item is clicked, open infowindow
 - Filtering by typing location
 - Responsive menus

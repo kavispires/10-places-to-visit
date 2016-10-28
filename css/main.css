@@ -299,6 +299,17 @@ nav {
     margin: 0 !important;
 }
 
+#photos {
+    height: 110px;
+    width: 240px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+}
+
+#photo img {
+}
+
 #pano {
     width: 100%;
     min-width: 200px;

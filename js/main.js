@@ -11,7 +11,7 @@ var ViewModel = function() {
         self.populatefilterList();
         // Initiate map
         self.initMap();
-    }
+    };
 
     /*  --------------
         MENUS 
@@ -33,24 +33,24 @@ var ViewModel = function() {
             self.navigationMenu(true);
             self.floaterWindow(true);
         }
-    }
+    };
 
     // Show/Hide .nav-list
     this.toggleNavigationMenu = function() {
         self.navigationMenu(!self.navigationMenu());
         // Always hides floater, in small screens
         self.hidefloaterWindow();
-    }
+    };
 
     // Show/hide .floater
     this.toggleFloaterWindow = function() {
         self.floaterWindow(!self.floaterWindow());
-    }
+    };
 
     // Always hides floater, in small screens
     this.hidefloaterWindow = function() {
         if(self.smallScreen()) self.floaterWindow(false);
-    }
+    };
 
     /*  --------------
         APP FEATURES 
@@ -76,7 +76,7 @@ var ViewModel = function() {
         // Populate currentCity and currentLocations
         self.currentCity(self.cityList()[self.currentCityIndex]);
         self.currentLocations(self.cityLocations()[self.currentCityIndex]);
-    }
+    };
 
     // Determine current City and Locations
     this.currentCityIndex = 0;
@@ -91,8 +91,8 @@ var ViewModel = function() {
         if(index !== self.currentCityIndex) {
             self.currentCity(self.cityList()[index]);
             self.currentLocations(self.cityLocations()[index]);
-            self.initMap();
             self.currentCityIndex = index;
+            self.initMap();
             // Recolor Markers
             self.recolorFavoriteMarkers(data);
             // Updates search field filter list
@@ -100,7 +100,7 @@ var ViewModel = function() {
         }
         // if smallScreen only, close nav
         if(self.smallScreen()) self.navigationMenu(false);
-    }
+    };
 
     // Show Favotires/Show All Locations
     this.favoriteStatus = ko.observable(false);
@@ -122,12 +122,12 @@ var ViewModel = function() {
         }
         self.map.setZoom(12);
         self.map.fitBounds(self.bounds());
-    }
+    };
 
     // Toggle Markers
     this.toggleMarkersLink = ko.observable('Hide Markers');
     this.toggleMarkers = function(data) {
-        var active = self.toggleMarkersLink()
+        var active = self.toggleMarkersLink();
         if (active == "Hide Markers") {
             self.toggleMarkersLink('Show Markers');
             // Hide all markers
@@ -139,13 +139,13 @@ var ViewModel = function() {
             self.toggleMarkersLink('Hide Markers');
             // Show all markers
             var bounds = new google.maps.LatLngBounds();
-            for (var i = 0; i < self.markers().length; i++) {
-                self.markers()[i].setMap(self.map);
-                bounds.extend(self.markers()[i].position);
+            for (var j = 0; j < self.markers().length; j++) {
+                self.markers()[j].setMap(self.map);
+                bounds.extend(self.markers()[j].position);
             }
             self.map.fitBounds(bounds);
         }
-    }
+    };
 
     /*  --------------
         MAP FEATURES 
@@ -157,8 +157,7 @@ var ViewModel = function() {
     this.bounds = ko.observable();
     this.boundsAll;
     this.boundsFavorites;
-    // Tracker for the first time a infowindow is being opened
-    this.firstTime = true;
+    this.fakeMarker = fakemarker;
 
     // Create Markers
     this.makeMarkerIcon = function(color) {
@@ -170,7 +169,7 @@ var ViewModel = function() {
             scaledSize: new google.maps.Size(21, 34)
         };
         return markerImage;
-    }
+    };
 
     // Markers Styles
     this.defaultIcon = this.makeMarkerIcon('63bde2');
@@ -215,7 +214,6 @@ var ViewModel = function() {
             });
 
             self.markers.push(marker);
-            console.log(marker.fsid()); //DELETE
 
             // Marker Listeners
             marker.addListener('click', function() {
@@ -259,10 +257,11 @@ var ViewModel = function() {
             if(self.markers()[i].getAnimation() !== null);
             self.markers()[i].setAnimation(null);
         }
-    }
+    };
 
     // Add content to infowindow
     this.geocodeAddress = ko.observable();
+    this.infowindowPhotos = ko.observableArray([]);
     this.populateInfoWindow = function(marker, infowindow) {
         if (infowindow.marker != marker) {
             // Clear infowindow
@@ -272,7 +271,6 @@ var ViewModel = function() {
             infowindow.addListener('closeclick', function() {
                 self.turnOffMarkerAnimation();
                 infowindow.marker = null;
-                ko.cleanNode(self, $('#address')[0]);
             });
 
             // Start contentString
@@ -288,13 +286,16 @@ var ViewModel = function() {
             contentString += '</div>';
 
             // Add foursquare photos div
-            contentString += '<div id="photos" data-bind="foreach: photos"><img src="" data-bind="attr: {src: photos}"></div>';
+            contentString += '<div id="photos" data-bind="foreach: infowindowPhotos"><img src="" data-bind="attr: {src: $data}"></div>';
+
+            // Add foursquare photo credits
+            contentString += '<small>Images powered by <a href="http://www.foursquare.com" target="_blank">FourSquare</a>.</small>';
 
             // Add pano div
             contentString += '<div id="pano"></div>';
 
             // Close contentString
-            contentString += '</div>'
+            contentString += '</div>';
 
             contentString = $.parseHTML(contentString)[0];
 
@@ -330,7 +331,7 @@ var ViewModel = function() {
                 } else {
                     writeGeocoder(address, cci, mi);
                 }
-            };
+            }
             
             getGeocoder();
 
@@ -346,8 +347,14 @@ var ViewModel = function() {
             FOURSQUARE
             */
 
-            // Get place id with Foursquare API
-            self.getFoursquareID(marker);
+            // If photos array is empty, get ID
+            if (marker.photos().length < 1) {
+                // Get place id with Foursquare API
+                self.getFoursquareID(marker);
+            } else {
+                self.infowindowPhotos(self.currentLocations()[marker.index].photos());
+                ko.applyBindings(self, $('#photos')[0]); 
+            }
 
             // Subscripe to fsid, tracking if it changes
             marker.fsid.subscribe(function(){
@@ -385,17 +392,21 @@ var ViewModel = function() {
 
             infowindow.open(self.map, marker);
         }
-    }
+    };
 
     // Toggle favorite when Heart is clicked
     this.markAsFavorite = function(data) {
         var index = data.index;
         var marker = self.markers()[index];
+        var key = self.currentCityIndex + index;
+        key = key.toString();
         if(data.favorite()) {
+            // Change favorite value
             data.favorite(false);
             // Recolor marker to default
             self.markerIcon(self.defaultIcon);
         } else {
+            // Change favorite value
             data.favorite(true);
             // Recolor marker to red
             self.markerIcon(self.favoritedIcon);
@@ -403,7 +414,7 @@ var ViewModel = function() {
         self.markers()[index].favorite = !self.markers()[index].favorite;
         self.markers()[index].setIcon(self.markerIcon());
         self.calculateBoundsForFavorite();
-    }
+    };
 
     // When currentCity is updated, recolor markers
     this.recolorFavoriteMarkers = function() {
@@ -420,7 +431,7 @@ var ViewModel = function() {
             }
             self.markers()[i].setIcon(self.markerIcon());
         }
-    }
+    };
 
     // Recalculate bounds based of Favorite Locations
     this.calculateBoundsForFavorite = function() {
@@ -436,14 +447,14 @@ var ViewModel = function() {
             }
         }
         self.boundsFavorites = boundsfav;
-    }
+    };
 
     // Location list item is clicked
     this.listItemClick = function(data) {
         var marker = self.markers()[data.index];
-        self.focusMarker(data, marker)
+        self.focusMarker(data, marker);
         self.openMarkerInfoWindow(data, marker);
-    }
+    };
 
     // Open corresponding marker's infowindow
     this.openMarkerInfoWindow = function(data, marker) {
@@ -451,26 +462,26 @@ var ViewModel = function() {
         // Toggle animation
         self.turnOffMarkerAnimation();
         marker.setAnimation(google.maps.Animation.BOUNCE);
-    }
+    };
 
     // Zoom on corresponding marker
     this.focusMarker = function(data, marker) {
         var latLng = marker.getPosition();
         self.map.setCenter(latLng);
         self.map.setZoom(17);
-    }
+    };
 
     this.resetZoom = function() {
         //self.bounds(self.boundsAll);
         self.map.setZoom(12);
         self.map.fitBounds(self.bounds());
-    }
+    };
 
     // When mouseover list-item, recolor corresponding marker to white (highlitedned icon)
     this.highlightMarkerOn = function(data) {
         self.markerIcon(self.highlightedIcon);
         self.markers()[data.index].setIcon(self.markerIcon());
-    }
+    };
 
     // When mouseout list-item, recolor back to default
     this.highlightMarkerOff = function(data) {
@@ -482,7 +493,7 @@ var ViewModel = function() {
             self.markerIcon(self.defaultIcon);
         }
         self.markers()[data.index].setIcon(self.markerIcon());
-    }
+    };
 
     /*  --------------
         FOURSQUARE API 
@@ -495,7 +506,7 @@ var ViewModel = function() {
         } else {
             return "100x100";
         }   
-    }
+    };
 
     // Request ID
     this.getFoursquareID = function(marker) {
@@ -510,13 +521,14 @@ var ViewModel = function() {
                         $.each(data.response.venues, function(i,venues){
                             marker.fsid(venues.id);
                             self.currentLocations()[marker.index].fsid(venues.id);
-                            console.log(self.currentLocations()[marker.index].fsid());
                        });
+                        ko.applyBindings(self, $('#photos')[0]); 
                 });
             } else {
                 console.log("It already has an ID.");
+                ko.applyBindings(self, $('#photos')[0]); 
             }
-    }
+    };
 
     // Build ID Request URL
     this.buidFoursquareIdUrl = function(marker){
@@ -524,14 +536,13 @@ var ViewModel = function() {
         '?client_id=' + fs_clientid +
         '&client_secret=' + fs_clientsecret +
         '&v=20130815&ll=' + marker.position.lat() + "," + marker.position.lng() + "&intent=checkin&radius=500" +
-        "&limit=3";
+        "&limit=1";
         return url;
-    }
+    };
 
     // Request Photos
     this.getFoursquarePhotos = function(marker) {
         // Only if it doesn't have photos already
-        console.log(marker.photos());
         if(marker.photos().length === 0){
             console.log('Requesting Photos...');
             // Build photo url
@@ -542,15 +553,14 @@ var ViewModel = function() {
                     $.each(data.response.photos.items, function(i,photo){                   
                         photo_url = photo.prefix + self.photosize() + photo.suffix;
                         // Push photo_url to observable arrays
-                        marker.photos.push(photo_url);
-                        self.currentLocations()[marker.index].photos(photo_url);
+                        self.currentLocations()[marker.index].photos.push(photo_url);
                     });
-                    console.log(self.currentLocations()[marker.index].photos());
+                    self.infowindowPhotos(self.currentLocations()[marker.index].photos());
             });  
         } else {
-            console.log("It already has array of Photos");
+            self.infowindowPhotos(self.currentLocations()[marker.index].photos());
         }
-    }
+    };
 
     // Build Photos Request URL
     this.buidFoursquarePhotoUrl = function(marker){
@@ -559,7 +569,7 @@ var ViewModel = function() {
         '&client_secret=' + fs_clientsecret +
         '&v=20130815&limit=3';
         return url;
-    }
+    };
 
     /*  --------------
         INPUT FIELD FILTERING 
@@ -574,19 +584,21 @@ var ViewModel = function() {
         var index = self.currentCityIndex;
         var locationList = self.currentLocations();
         var locationName;
+        // Empty filterList array
+        self.filterList = ko.observableArray([]);
         // Get location names from currentCity, convert name (trimString) and push them to filterList
         for (var i = 0; i < locationList.length; i++) {
             locationName = locationList[i].title;
             locationName = self.trimString(locationName);
             self.filterList.push(locationName);
         }
-    }
+    };
 
     // Trims 'string' removing all the whitespace and converting to lowercase
     this.trimString = function(string) {
         string = string.toLowerCase().trim().replace(/\s+/g, '');
         return string;
-    }
+    };
 
     // Filter locations list on screen
     this.filter.subscribe(function() {
@@ -627,7 +639,7 @@ var ViewModel = function() {
     // 'x' clear button for Input Text Field
     this.clearInputTextField = function() {
         self.filter('');
-    }
+    };
 
     /*  --------------
         INITIATE APP 
@@ -635,7 +647,7 @@ var ViewModel = function() {
 
     // After all code is read, initiates app
     this.initApp();
-}
+};
 
 
 function init() {
