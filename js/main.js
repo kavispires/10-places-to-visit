@@ -39,7 +39,7 @@ var ViewModel = function() {
                 window.localStorage.setItem('app', '10places');
             }
         } else {
-            console.log('No browser Web Storage support. No data will be saved.');
+            alert('No browser Web Storage support. No data will be saved.');
         }
     }
 
@@ -363,7 +363,7 @@ var ViewModel = function() {
                             }
                         } else {
                             address = 'Address not available.'; 
-                            console.log('Geocoder failed due to: ' + status);
+                            alert('Geocoder failed due to: ' + status);
                             writeGeocoder(address, cci, mi); 
                         }
                     });
