@@ -1,24 +1,43 @@
-# README
+# 10 Places to Visit
+## Udacity Neighborhood Map project v1.0
 
-** In progress **
+### To Run this app
+- Download the application from [github](https://github.com/kavispires/neighborhoodmap).
+- Open ```index.html``` to start the app.
+- You may play a live version [here](https://kavispires.github.io/neighborhoodmap/).
 
-#### TODO
+----------------------------
+### About the app
+
+This app provides 4 major cities:
+- San Francisco,
+- New York city,
+- Los Angeles,
+- Miami,
+and presents 10 touristic locations within each of those cities that the user may want to visit.
+
+----------------------------
+### Functionality
+
+The user may:
+- Select one of the four main cities to be displayed. (San Francisco is default);
+- Select a location in the list or map which will display unique information about that place;
+- See unique information window showing **name**, **address**, **three photos** (provided by [Foursquare API](https://developer.foursquare.com/)) and a **Google Street View** window (provided by [Google Maps API](https://developers.google.com/maps/));
+- Enlarge photos by clicking on each of them, opening a overlay window.
+- Mark their **favorite** locations with a heart in the list window. Those favorite locations are *saved locally* and reloaded whenever the user reopens the app.
+- Type any characters and list window will display only locations that match the text.
+- Show only their favorited locations.
+- Toggle all markers.
+- Zoom out to show all locations in the map in case the map has been zoomed in at any point.
+
+----------------------------
+### Tools and Libraries
+
+- [HTML5Boilerplate](https://html5boilerplate.com/)
+- [jQuery](https://jquery.com/)
+- [Knockout.js](http://knockoutjs.com/)
+- [Google Maps API](https://developers.google.com/maps/)
+- [Foursquare API](https://developer.foursquare.com/)
+- [Fontastic](http://fontastic.me/)
 
 
-#### DONE
-- LocalStorage implemented
-- Add third-party API (foursquare)
-- When list-item is clicked, open infowindow
-- Filtering by typing location
-- Responsive menus
-- Markers are highlighted when hover on list
-- When favorite, make marker red
-- Favorite color is carried when City is changed
-- Infowindow shows formatted_address
-- InfoWindow shows street view
-- List is highlighted when marker is clicked
-- Implement Favorite 
-- Favorite Filtering 
-- Markers are not resetting (show/hide all)
-- When list-item is clicked, zoom in that item marker
-- When filtering favorites, bounds are set to those favorite locations
