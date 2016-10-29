@@ -14,16 +14,17 @@ This app provides 4 major cities:
 - New York city,
 - Los Angeles,
 - Miami,
+
 and presents 10 touristic locations within each of those cities that the user may want to visit.
 
 ----------------------------
 ### Functionality
 
-The user may:
+Users may:
 - Select one of the four main cities to be displayed. (San Francisco is default);
 - Select a location in the list or map which will display unique information about that place;
 - See unique information window showing **name**, **address**, **three photos** (provided by [Foursquare API](https://developer.foursquare.com/)) and a **Google Street View** window (provided by [Google Maps API](https://developers.google.com/maps/));
-- Enlarge photos by clicking on each of them, opening a overlay window.
+- Enlarge photos by clicking on each of them, opening an overlay window.
 - Mark their **favorite** locations with a heart in the list window. Those favorite locations are *saved locally* and reloaded whenever the user reopens the app.
 - Type any characters and list window will display only locations that match the text.
 - Show only their favorited locations.
