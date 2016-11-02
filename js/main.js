@@ -41,7 +41,7 @@ var ViewModel = function() {
         } else {
             alert('No browser Web Storage support. No data will be saved.');
         }
-    }
+    };
 
     
 
@@ -141,11 +141,12 @@ var ViewModel = function() {
     this.toggleFavoriteLink = ko.observable('Filter Favorites Only');
     this.toggleFavorite = function(data) {
         var status = self.favoriteStatus();
+        var j;
         if (status) {
             self.favoriteStatus(false);
             self.toggleFavoriteLink('Filter Favorites Only');
             // Show all markers
-            for (var j = 0; j < self.markers().length; j++) {
+            for (j = 0; j < self.markers().length; j++) {
                 self.markers()[j].setVisible(true);
             }
             // Fit Bounds to All Bounds
@@ -155,8 +156,8 @@ var ViewModel = function() {
             self.favoriteStatus(true);
             self.toggleFavoriteLink('List All Locations');
             // Show only Favorite
-            for (var j = 0; j < self.markers().length; j++) {
-                if(self.markers()[j].favorite == true) {
+            for (j = 0; j < self.markers().length; j++) {
+                if(self.markers()[j].favorite === true) {
                     self.markers()[j].setVisible(true);
                 } else {
                     self.markers()[j].setVisible(false);
@@ -167,6 +168,9 @@ var ViewModel = function() {
                 self.bounds(self.boundsFavorites);
             }          
         }
+        // Close info window
+        self.largeInfowindow.close();
+        // Set map zoom
         self.map.setZoom(12);
         self.map.fitBounds(self.bounds());
     };
@@ -191,7 +195,10 @@ var ViewModel = function() {
             }
             self.map.fitBounds(bounds);
         }
+        self.largeInfowindow.close();
     };
+
+
 
     /*  --------------
         MAP FEATURES 
@@ -392,10 +399,9 @@ var ViewModel = function() {
 
             // This function writes on the infowindow and it's called from inside the geocoder in order to wait for a callback
             function writeGeocoder(address,cci, mi) {
-                self.cityLocations()[cci][mi].address = address;
-                self.geocodeAddress(address);
                 console.log('Writing Geocoder address...');
-                ko.applyBindings(self, $('#address')[0]);               
+                self.cityLocations()[cci][mi].address = address;
+                self.geocodeAddress(address);      
             }
 
             /*
@@ -408,7 +414,7 @@ var ViewModel = function() {
                 self.getFoursquareID(marker);
             } else {
                 self.infowindowPhotos(self.currentLocations()[marker.index].photos());
-                ko.applyBindings(self, $('#photos')[0]); 
+                //ko.applyBindings(self, $('#photos')[0]); 
             }
 
             // Subscripe to fsid, tracking if it changes
@@ -448,6 +454,10 @@ var ViewModel = function() {
             self.modalCaption(marker.title);
 
             infowindow.open(self.map, marker);
+            
+            // Apply new bindings
+            ko.applyBindings(self, $('#photos')[0]);
+            ko.applyBindings(self, $('#address')[0]);
         }
     };
 
@@ -580,7 +590,6 @@ var ViewModel = function() {
                             marker.fsid(venues.id);
                             self.currentLocations()[marker.index].fsid(venues.id);
                        });
-                        ko.applyBindings(self, $('#photos')[0]); 
                     })
                     .fail(function() {
                         markers.fsid(null);
@@ -589,7 +598,6 @@ var ViewModel = function() {
                     });
             } else {
                 console.log("It already has an ID.");
-                ko.applyBindings(self, $('#photos')[0]); 
             }
     };
 
@@ -605,7 +613,7 @@ var ViewModel = function() {
 
     // Request Photos
     this.getFoursquarePhotos = function(marker) {
-        if(marker.fsid() != null) {
+        if(marker.fsid() !== null) {
             // Only if it doesn't have photos already
             if(marker.photos().length === 0){
                 console.log('Requesting Photos...');
