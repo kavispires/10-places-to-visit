@@ -570,7 +570,7 @@ var ViewModel = function() {
                     .fail(function() {
                         markers.fsid(null);
                         self.cuttentLocations()[marker.index].fsid(null);
-                        //TODO ERROR MESSAGE
+                        alert("Foursquare data could not be loaded. Photos may not appear.");
                     });
             } else {
                 console.log("It already has an ID.");
@@ -608,7 +608,7 @@ var ViewModel = function() {
                     })
                     .fail(function() {
                         self.currentLocations()[marker.index].photos(null);
-                        //TODO ERROR MESSAGE
+                        alert("Foursquare data could not be loaded. Photos may not appear.");
                     });
             } else {
                 self.infowindowPhotos(self.currentLocations()[marker.index].photos());
