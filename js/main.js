@@ -704,7 +704,7 @@ var ViewModel = function() {
     this.filter.subscribe(function() {
         var typed = self.trimString(self.filter());
         var list = self.filterList();
-        var i, match;
+        var i, j, match;
         var indexArray = [];   
         // Iterate though all items on list and compared typed with each, push index to indexArray
         $.each(list, function(index, element) {
@@ -727,12 +727,30 @@ var ViewModel = function() {
                 if($.inArray(element, tempArray) === -1) tempArray.push(element);
             });
             indexArray = tempArray;
+            console.log(indexArray);
             // Loop through indexes and update filtered() observable
             for(i = 0; i < indexArray.length; i++){
                 self.currentLocations()[indexArray[i]].filtered(true);
+
             }
+            // Show only filtered markers
+            for (i = 0; i < self.markers().length; i++) {
+                for(j = 0; j < indexArray.length; j++) {
+                    console.log(self.markers()[i].index);
+                    if(indexArray.indexOf(self.markers()[i].index) != -1) {
+                        self.markers()[i].setVisible(true);
+                    } else {
+                        self.markers()[i].setVisible(false);
+                    }
+                }
+            }
+
         } else {
             console.log('No matches.');
+            // Show all markers
+            for (i = 0; i < self.markers().length; i++) {
+                self.markers()[i].setVisible(true);
+            }
         }
     });
 
