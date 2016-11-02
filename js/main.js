@@ -727,7 +727,6 @@ var ViewModel = function() {
                 if($.inArray(element, tempArray) === -1) tempArray.push(element);
             });
             indexArray = tempArray;
-            console.log(indexArray);
             // Loop through indexes and update filtered() observable
             for(i = 0; i < indexArray.length; i++){
                 self.currentLocations()[indexArray[i]].filtered(true);
@@ -736,7 +735,6 @@ var ViewModel = function() {
             // Show only filtered markers
             for (i = 0; i < self.markers().length; i++) {
                 for(j = 0; j < indexArray.length; j++) {
-                    console.log(self.markers()[i].index);
                     if(indexArray.indexOf(self.markers()[i].index) != -1) {
                         self.markers()[i].setVisible(true);
                     } else {
