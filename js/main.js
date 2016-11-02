@@ -145,12 +145,11 @@ var ViewModel = function() {
             self.favoriteStatus(false);
             self.toggleFavoriteLink('Filter Favorites Only');
             // Show all markers
-            var bounds = new google.maps.LatLngBounds();
             for (var j = 0; j < self.markers().length; j++) {
                 self.markers()[j].setVisible(true);
             }
-            self.map.fitBounds(bounds);
             // Fit Bounds to All Bounds
+            var bounds = new google.maps.LatLngBounds();
             self.bounds(self.boundsAll);
         } else {
             self.favoriteStatus(true);
@@ -533,7 +532,6 @@ var ViewModel = function() {
     };
 
     this.resetZoom = function() {
-        //self.bounds(self.boundsAll);
         self.map.setZoom(12);
         self.map.fitBounds(self.bounds());
     };
@@ -742,7 +740,6 @@ var ViewModel = function() {
                     }
                 }
             }
-
         } else {
             console.log('No matches.');
             // Show all markers
@@ -750,6 +747,7 @@ var ViewModel = function() {
                 self.markers()[i].setVisible(true);
             }
         }
+        self.resetZoom();
     });
 
     // 'x' clear button for Input Text Field
