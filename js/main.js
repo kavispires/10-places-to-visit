@@ -144,11 +144,25 @@ var ViewModel = function() {
         if (status) {
             self.favoriteStatus(false);
             self.toggleFavoriteLink('Filter Favorites Only');
+            // Show all markers
+            var bounds = new google.maps.LatLngBounds();
+            for (var j = 0; j < self.markers().length; j++) {
+                self.markers()[j].setVisible(true);
+            }
+            self.map.fitBounds(bounds);
             // Fit Bounds to All Bounds
             self.bounds(self.boundsAll);
         } else {
             self.favoriteStatus(true);
             self.toggleFavoriteLink('List All Locations');
+            // Show only Favorite
+            for (var j = 0; j < self.markers().length; j++) {
+                if(self.markers()[j].favorite == true) {
+                    self.markers()[j].setVisible(true);
+                } else {
+                    self.markers()[j].setVisible(false);
+                }
+            }
             // Fit Bounds to Favorite Bounds if any location has been favorited ONLY
             if (self.boundsFavorites) {
                 self.bounds(self.boundsFavorites);
@@ -166,15 +180,14 @@ var ViewModel = function() {
             self.toggleMarkersLink('Show Markers');
             // Hide all markers
             for (var i = 0; i < self.markers().length; i++) {
-                self.markers()[i].setMap(null);
+                self.markers()[i].setVisible(false);
             }
-
         } else {
             self.toggleMarkersLink('Hide Markers');
             // Show all markers
             var bounds = new google.maps.LatLngBounds();
             for (var j = 0; j < self.markers().length; j++) {
-                self.markers()[j].setMap(self.map);
+                self.markers()[j].setVisible(true);
                 bounds.extend(self.markers()[j].position);
             }
             self.map.fitBounds(bounds);
@@ -188,6 +201,7 @@ var ViewModel = function() {
     // Inicialize Map
     this.map = ko.observable();
     this.markers = ko.observableArray([]);
+    this.visibleMarkers = ko.observableArray([]);
     this.bounds = ko.observable();
     this.boundsAll;
     this.boundsFavorites;
@@ -213,8 +227,9 @@ var ViewModel = function() {
     this.largeInfowindow = new google.maps.InfoWindow();
 
     this.initMap = function() {
-        // Clear markers
+        // Clear markers and visibleMarkers
         self.markers([]);
+        self.visibleMarkers([]);
 
         self.map = new google.maps.Map(document.getElementById('map'), {
             center: {
@@ -250,9 +265,7 @@ var ViewModel = function() {
             if(self.currentLocations()[i].favorite()) {
                 marker.icon = self.favoritedIcon;
                 marker.favorite = true;
-            } 
-
-            self.markers.push(marker);
+            }
 
             // Marker Listeners
             marker.addListener('click', function() {
@@ -285,6 +298,10 @@ var ViewModel = function() {
             self.boundsAll = bounds;
             // Update observable for bounds
             self.bounds(bounds);
+
+            // Push Markers
+            self.markers.push(marker);
+            self.visibleMarkers.push(marker);
         }
         self.map.fitBounds(self.bounds());
 
@@ -647,12 +664,12 @@ var ViewModel = function() {
         url = url[0] + url[2] + url[1];
         self.modalImage(url);
         self.toggleModal(true);
-    }
+    };
 
     // Closes Modal
     this.closeModal = function() {
         self.toggleModal(false);
-    }
+    };
 
     /*  --------------
         INPUT FIELD FILTERING 

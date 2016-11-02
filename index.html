@@ -48,7 +48,7 @@
                     <a class="filters toggle-favorite" href="#" data-bind="text: toggleFavoriteLink, click: toggleFavorite">Show Only Favorites</a>  <a class="filters toggle-markers" hreft="#" data-bind="text: toggleMarkersLink, click: toggleMarkers">Hide all markers</a>  <a class="filters zoom-out" href="#" data-bind="click: resetZoom">Zoom out</a>
                     <ul class="location-list" data-bind="foreach: currentLocations">
                         <!--ko if: filtered()-->
-                        <li class="location-item" data-bind="visible: favorite() == $parent.favoriteStatus() || $parent.favoriteStatus() == false, css:{ 'location-highlight': highlight() == true}, event: { mouseover: $parent.highlightMarkerOn, mouseout: $parent.highlightMarkerOff}"><span class="location-title" data-bind="text: title, click: $parent.listItemClick"></span><span class="icon-heart" data-bind="click: $parent.markAsFavorite, css:{ 'favorited-heart': favorite() == true}"></span><!-- <br><img class="image" src="" data-bind="attr: {src: photos()}"> --></li>
+                        <li class="location-item" data-bind="visible: favorite() == $parent.favoriteStatus() || $parent.favoriteStatus() == false, css:{ 'location-highlight': highlight() == true}, event: { mouseover: $parent.highlightMarkerOn, mouseout: $parent.highlightMarkerOff}"><span class="location-title" data-bind="text: title, click: $parent.listItemClick"></span><span class="icon-heart" data-bind="click: $parent.markAsFavorite, css:{ 'favorited-heart': favorite() == true}"></span></li>
                         <!--/ko-->
 
                     </ul>
