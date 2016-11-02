@@ -560,14 +560,18 @@ var ViewModel = function() {
                 // Build url
                 var url = self.buidFoursquareIdUrl(marker);
                 // Request ID and write on Location
-                $.getJSON(url,
-                    function(data) {
+                $.getJSON(url, function(data) {
                         $.each(data.response.venues, function(i,venues){
                             marker.fsid(venues.id);
                             self.currentLocations()[marker.index].fsid(venues.id);
                        });
                         ko.applyBindings(self, $('#photos')[0]); 
-                });
+                    })
+                    .fail(function() {
+                        markers.fsid(null);
+                        self.cuttentLocations()[marker.index].fsid(null);
+                        //TODO ERROR MESSAGE
+                    });
             } else {
                 console.log("It already has an ID.");
                 ko.applyBindings(self, $('#photos')[0]); 
@@ -586,23 +590,29 @@ var ViewModel = function() {
 
     // Request Photos
     this.getFoursquarePhotos = function(marker) {
-        // Only if it doesn't have photos already
-        if(marker.photos().length === 0){
-            console.log('Requesting Photos...');
-            // Build photo url
-            var url = self.buidFoursquarePhotoUrl(marker);
-            // Request Photos and push to Location photos
-            $.getJSON(url,
-                function(data) {
-                    $.each(data.response.photos.items, function(i,photo){                   
-                        photo_url = photo.prefix + self.photosize() + photo.suffix;
-                        // Push photo_url to observable arrays
-                        self.currentLocations()[marker.index].photos.push(photo_url);
+        if(marker.fsid() != null) {
+            // Only if it doesn't have photos already
+            if(marker.photos().length === 0){
+                console.log('Requesting Photos...');
+                // Build photo url
+                var url = self.buidFoursquarePhotoUrl(marker);
+                // Request Photos and push to Location photos
+                $.getJSON(url,
+                    function(data) {
+                        $.each(data.response.photos.items, function(i,photo){                   
+                            photo_url = photo.prefix + self.photosize() + photo.suffix;
+                            // Push photo_url to observable arrays
+                            self.currentLocations()[marker.index].photos.push(photo_url);
+                        });
+                        self.infowindowPhotos(self.currentLocations()[marker.index].photos());
+                    })
+                    .fail(function() {
+                        self.currentLocations()[marker.index].photos(null);
+                        //TODO ERROR MESSAGE
                     });
-                    self.infowindowPhotos(self.currentLocations()[marker.index].photos());
-            });  
-        } else {
-            self.infowindowPhotos(self.currentLocations()[marker.index].photos());
+            } else {
+                self.infowindowPhotos(self.currentLocations()[marker.index].photos());
+            }
         }
     };
 
