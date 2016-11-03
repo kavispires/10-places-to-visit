@@ -4,4 +4,5 @@ _BUILDER/
 */.DS_Store
 index-foursquare-test.html
 js/foursquare-test.js
+js/locations.json
 CHECKLIST.md

@@ -579,26 +579,31 @@ var ViewModel = function() {
 
     // Request ID
     this.getFoursquareID = function(marker) {
+        // In case marker is undefined
+        if(marker == undefined) {
+            alert("Foursquare data could not be loaded. Data not available.");
+            return;
+        }
         // Only if it doens't have one already
         if(!marker.fsid()){
-                console.log('Requesting ID...');
-                // Build url
-                var url = self.buidFoursquareIdUrl(marker);
-                // Request ID and write on Location
-                $.getJSON(url, function(data) {
-                        $.each(data.response.venues, function(i,venues){
-                            marker.fsid(venues.id);
-                            self.currentLocations()[marker.index].fsid(venues.id);
-                       });
-                    })
-                    .fail(function() {
-                        markers.fsid(null);
-                        self.cuttentLocations()[marker.index].fsid(null);
-                        alert("Foursquare data could not be loaded. Photos may not appear.");
-                    });
-            } else {
-                console.log("It already has an ID.");
-            }
+            console.log('Requesting ID...');
+            // Build url
+            var url = self.buidFoursquareIdUrl(marker);
+            // Request ID and write on Location
+            $.getJSON(url, function(data) {
+                $.each(data.response.venues, function(i,venues){
+                    marker.fsid(venues.id);
+                    self.currentLocations()[marker.index].fsid(venues.id);
+               });
+            })
+            .fail(function() {
+                marker.fsid(null);
+                self.currentLocations()[marker.index].fsid(null);
+                alert("Foursquare data could not be loaded. Photos may not appear.");
+            });
+        } else {
+            console.log("It already has an ID.");
+        }
     };
 
     // Build ID Request URL
@@ -755,6 +760,9 @@ var ViewModel = function() {
                 self.markers()[i].setVisible(true);
             }
         }
+        // Close info window
+        self.largeInfowindow.close();
+        // Reset Zoom
         self.resetZoom();
     });
 
@@ -774,4 +782,9 @@ var ViewModel = function() {
 
 function init() {
     ko.applyBindings(new ViewModel());
+}
+
+function mapError() {
+    console.log("Google Maps faield to load. Application will not work properly.");
+    alert("Google Maps failed to load. Application will not work properly.");
 }
