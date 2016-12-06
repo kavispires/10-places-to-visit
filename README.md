@@ -2,9 +2,9 @@
 ## Udacity Neighborhood Map project v1.0
 
 ### To Run this app
-- Download the application from [github](https://github.com/kavispires/neighborhoodmap).
+- Download the application from [github](https://github.com/kavispires/10-places-to-visit).
 - Open ```index.html``` to start the app.
-- You may play a live version [here](https://kavispires.github.io/neighborhoodmap/).
+- You may play a live version [here](https://kavispires.github.io/10-places-to-visit/).
 
 ----------------------------
 ### About the app
